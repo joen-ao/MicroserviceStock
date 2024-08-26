@@ -3,10 +3,13 @@ package bootcampragma.emazon.infrastructure.output.jpa.adapter;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
 import bootcampragma.emazon.infrastructure.exception.*;
+import bootcampragma.emazon.infrastructure.output.jpa.entity.CategoryEntity;
 import bootcampragma.emazon.infrastructure.output.jpa.mapper.CategoryEntityMapper;
 import bootcampragma.emazon.infrastructure.output.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -34,5 +37,14 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
             throw new CategoryOversizeDescriptionException();
         }
         categoryRepository.save(categoryEntityMapper.toCategoryEntity(category));
+    }
+
+    @Override
+    public List<Category> getAllCategory() {
+        List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
+        if(categoryEntityList.isEmpty()){
+            throw new NoDataFoundException();
+        }
+        return categoryEntityMapper.tocCategoryList(categoryEntityList);
     }
 }
