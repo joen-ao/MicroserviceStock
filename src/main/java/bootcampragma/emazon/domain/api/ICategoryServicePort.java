@@ -9,4 +9,5 @@ public interface ICategoryServicePort {
     void saveCategory(Category category);
     List<Category> getAllCategory(Integer page, Integer size, String sortDirection);
 
+
 }

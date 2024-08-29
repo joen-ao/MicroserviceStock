@@ -9,4 +9,5 @@ public interface ICategoryHandler {
 
     void saveCategory(CategoryRequest categoryRequest);
     List<CategoryResponse> getAllCategory(Integer page, Integer size, String sortDirection);
+
 }

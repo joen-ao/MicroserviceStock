@@ -1,10 +1,12 @@
 package bootcampragma.emazon.aplication.handler;
 
 
+
 import bootcampragma.emazon.aplication.dto.CategoryRequest;
 import bootcampragma.emazon.aplication.dto.CategoryResponse;
 import bootcampragma.emazon.aplication.mapper.CategoryRequestMapper;
 import bootcampragma.emazon.aplication.mapper.CategoryResponseMapper;
+
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 class CategoryHandlerTest {
 
@@ -27,6 +31,7 @@ class CategoryHandlerTest {
 
     @Mock
     private CategoryRequestMapper categoryRequestMapper;
+
 
     @Mock
     private CategoryResponseMapper categoryResponseMapper;
@@ -58,6 +63,7 @@ class CategoryHandlerTest {
         verify(categoryRequestMapper, times(1)).toRequest(categoryRequest);
         verify(categoryServicePort, times(1)).saveCategory(category);
     }
+
     @Test
     void getAllCategory_ShouldReturnMappedResponseList() {
         // Arrange
@@ -87,3 +93,4 @@ class CategoryHandlerTest {
         verify(categoryResponseMapper, times(1)).toResponseList(categories);
     }
 }
+

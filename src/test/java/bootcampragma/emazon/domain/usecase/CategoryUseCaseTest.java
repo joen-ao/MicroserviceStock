@@ -8,11 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 class CategoryUseCaseTest {
 
@@ -39,6 +41,7 @@ class CategoryUseCaseTest {
         verify(categoryPersistencePort, times(1)).saveCategory(category);
     }
 
+
     @Test  // Agregamos la anotación @Test aquí
     void testGetAllCategory() {
         // Arrange
@@ -60,4 +63,5 @@ class CategoryUseCaseTest {
         assertEquals(expectedCategories, actualCategories);
         verify(categoryPersistencePort, times(1)).getAllCategory(page, size, sortDirection);
     }
+
 }

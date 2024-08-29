@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Arrays;
 import java.util.List;
+
 
 @ExtendWith(MockitoExtension.class)
 class CategoryJpaAdapterTest {
@@ -42,7 +44,9 @@ class CategoryJpaAdapterTest {
 
     @BeforeEach
     void setUp() {
+
         category = new Category(1L, "Category Name", "Category Description");
+
         category.setName("Valid Name");
         category.setDescription("Valid Description");
     }
@@ -91,6 +95,7 @@ class CategoryJpaAdapterTest {
 
         verify(categoryRepository, times(1)).save(any(CategoryEntity.class));
     }
+
     @Test
     void getAllCategory_ShouldReturnMappedCategoryList_WhenSortDirectionIsProvided() {
         // Arrange
@@ -157,3 +162,4 @@ class CategoryJpaAdapterTest {
         verify(categoryEntityMapper, times(1)).toCategoryList(categoryEntityList);
     }
 }
+

@@ -16,7 +16,7 @@ public interface CategoryResponseMapper {
 
     CategoryResponse toResponse(Category categoryEntity);
 
-    default List<CategoryResponse>toResponseList(List<Category> categoryRequestList){
+    default List<CategoryResponse> toResponseList(List<Category> categoryRequestList){
         return categoryRequestList.stream().map(
                 categoryRequest-> {
                     CategoryResponse categoryResponse = new CategoryResponse();
