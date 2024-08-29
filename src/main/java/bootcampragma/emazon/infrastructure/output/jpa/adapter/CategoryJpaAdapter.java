@@ -3,6 +3,7 @@ package bootcampragma.emazon.infrastructure.output.jpa.adapter;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
 import bootcampragma.emazon.infrastructure.exception.*;
+import bootcampragma.emazon.infrastructure.output.jpa.entity.CategoryEntity;
 import bootcampragma.emazon.infrastructure.output.jpa.mapper.CategoryEntityMapper;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

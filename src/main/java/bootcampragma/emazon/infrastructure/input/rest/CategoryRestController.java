@@ -1,15 +1,21 @@
 package bootcampragma.emazon.infrastructure.input.rest;
 
 import bootcampragma.emazon.aplication.dto.CategoryRequest;
+import bootcampragma.emazon.aplication.dto.CategoryResponse;
 import bootcampragma.emazon.aplication.handler.ICategoryHandler;
 
 
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/category")
