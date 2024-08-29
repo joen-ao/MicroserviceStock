@@ -8,6 +8,5 @@ import java.util.List;
 public interface ICategoryPersistencePort {
 
     void saveCategory(Category category);
-    List<Category> getAllCategory();
-
+    List<Category> getAllCategory(Integer page, Integer size, String sortDirection);
 }

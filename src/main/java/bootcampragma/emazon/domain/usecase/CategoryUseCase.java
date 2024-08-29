@@ -20,9 +20,10 @@ public class CategoryUseCase implements ICategoryServicePort{
     }
 
     @Override
-    public List<Category> getAllCategory() {
-        return categoryPersistencePort.getAllCategory();
+    public List<Category> getAllCategory(Integer page, Integer size, String sortDirection) {
+        return categoryPersistencePort.getAllCategory(page, size, sortDirection);
     }
 
-}
 
+
+}
