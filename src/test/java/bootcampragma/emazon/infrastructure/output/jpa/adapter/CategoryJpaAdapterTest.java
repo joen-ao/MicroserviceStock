@@ -12,9 +12,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 
 @ExtendWith(MockitoExtension.class)
 class CategoryJpaAdapterTest {
@@ -32,7 +44,9 @@ class CategoryJpaAdapterTest {
 
     @BeforeEach
     void setUp() {
-        category = new Category();
+
+        category = new Category(1L, "Category Name", "Category Description");
+
         category.setName("Valid Name");
         category.setDescription("Valid Description");
     }
@@ -81,4 +95,71 @@ class CategoryJpaAdapterTest {
 
         verify(categoryRepository, times(1)).save(any(CategoryEntity.class));
     }
+
+    @Test
+    void getAllCategory_ShouldReturnMappedCategoryList_WhenSortDirectionIsProvided() {
+        // Arrange
+        Integer page = 0;
+        Integer size = 10;
+        String sortDirection = "asc";
+
+        Pageable pagination = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), "name"));
+
+        CategoryEntity categoryEntity1 = new CategoryEntity(1L, "Category 1", "Description 1");
+        CategoryEntity categoryEntity2 = new CategoryEntity(2L, "Category 2", "Description 2");
+
+        List<CategoryEntity> categoryEntityList = Arrays.asList(categoryEntity1, categoryEntity2);
+        Page<CategoryEntity> categoryEntityPage = new PageImpl<>(categoryEntityList);
+
+        when(categoryRepository.findAll(pagination)).thenReturn(categoryEntityPage);
+
+        Category category1 = new Category(1L, "Category 1", "Description 1");
+        Category category2 = new Category(2L, "Category 2", "Description 2");
+
+        List<Category> expectedCategories = Arrays.asList(category1, category2);
+
+        when(categoryEntityMapper.toCategoryList(categoryEntityList)).thenReturn(expectedCategories);
+
+        // Act
+        List<Category> actualCategories = categoryJpaAdapter.getAllCategory(page, size, sortDirection);
+
+        // Assert
+        assertEquals(expectedCategories, actualCategories);
+        verify(categoryRepository, times(1)).findAll(pagination);
+        verify(categoryEntityMapper, times(1)).toCategoryList(categoryEntityList);
+    }
+
+    @Test
+    void getAllCategory_ShouldReturnMappedCategoryList_WhenSortDirectionIsNullOrEmpty() {
+        // Arrange
+        Integer page = 0;
+        Integer size = 10;
+        String sortDirection = null;
+
+        Pageable pagination = PageRequest.of(page, size);
+
+        CategoryEntity categoryEntity1 = new CategoryEntity(1L, "Category 1", "Description 1");
+        CategoryEntity categoryEntity2 = new CategoryEntity(2L, "Category 2", "Description 2");
+
+        List<CategoryEntity> categoryEntityList = Arrays.asList(categoryEntity1, categoryEntity2);
+        Page<CategoryEntity> categoryEntityPage = new PageImpl<>(categoryEntityList);
+
+        when(categoryRepository.findAll(pagination)).thenReturn(categoryEntityPage);
+
+        Category category1 = new Category(1L, "Category 1", "Description 1");
+        Category category2 = new Category(2L, "Category 2", "Description 2");
+
+        List<Category> expectedCategories = Arrays.asList(category1, category2);
+
+        when(categoryEntityMapper.toCategoryList(categoryEntityList)).thenReturn(expectedCategories);
+
+        // Act
+        List<Category> actualCategories = categoryJpaAdapter.getAllCategory(page, size, sortDirection);
+
+        // Assert
+        assertEquals(expectedCategories, actualCategories);
+        verify(categoryRepository, times(1)).findAll(pagination);
+        verify(categoryEntityMapper, times(1)).toCategoryList(categoryEntityList);
+    }
 }
+

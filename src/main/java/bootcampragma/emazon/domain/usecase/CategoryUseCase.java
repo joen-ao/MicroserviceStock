@@ -23,4 +23,5 @@ public class CategoryUseCase implements ICategoryServicePort{
         return categoryPersistencePort.getAllCategory(page, size, sortDirection);
     }
 
+
 }

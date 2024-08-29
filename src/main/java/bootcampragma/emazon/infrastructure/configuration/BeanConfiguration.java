@@ -30,6 +30,7 @@ public class BeanConfiguration {
         return new CategoryUseCase(categoryPersistencePort());
     }
 
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -38,4 +39,5 @@ public class BeanConfiguration {
                         .version("1.0")
                         .description("API documentation for Emazon application"));
     }
+
 }

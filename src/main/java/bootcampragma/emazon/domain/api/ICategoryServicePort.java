@@ -1,6 +1,5 @@
 package bootcampragma.emazon.domain.api;
 
-
 import bootcampragma.emazon.domain.entity.Category;
 
 import java.util.List;

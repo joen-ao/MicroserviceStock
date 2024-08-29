@@ -13,4 +13,7 @@ public interface CategoryEntityMapper  {
     CategoryEntity toCategoryEntity(Category category);
     Category toDomainCategory(CategoryEntity category);
 
+
+    List<Category> toCategoryList(List<CategoryEntity> categoryEntities);
+
 }

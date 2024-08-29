@@ -33,5 +33,4 @@ public class CategoryControllerAdvisor {
     public ResponseEntity<String> handleCategoryNameEmptyException(CategoryNameEmptyException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
 }

@@ -4,4 +4,5 @@ public class CategoryOversizeNameException extends RuntimeException{
     public CategoryOversizeNameException(){
         super("Name is too long");
     }
+
 }

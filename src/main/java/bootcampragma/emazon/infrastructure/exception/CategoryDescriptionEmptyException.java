@@ -4,4 +4,5 @@ public class CategoryDescriptionEmptyException extends RuntimeException{
     public CategoryDescriptionEmptyException(){
         super("Description cannot be empty");
     }
+
 }

@@ -6,6 +6,9 @@ import bootcampragma.emazon.infrastructure.exception.*;
 import bootcampragma.emazon.infrastructure.output.jpa.mapper.CategoryEntityMapper;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,4 +38,18 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         }
         categoryRepository.save(categoryEntityMapper.toCategoryEntity(category));
     }
+
+
+    @Override
+    public List<Category> getAllCategory(Integer page, Integer size, String sortDirection) {
+        Pageable pagination;
+        if (sortDirection == null || sortDirection.isEmpty()) {
+            pagination = PageRequest.of(page, size);
+        } else {
+            pagination = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), "name"));
+        }
+        List<CategoryEntity> categories = categoryRepository.findAll(pagination).getContent();
+        return categoryEntityMapper.toCategoryList(categories);
+    }
 }
+
