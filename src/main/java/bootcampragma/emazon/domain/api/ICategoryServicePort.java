@@ -1,13 +1,10 @@
 package bootcampragma.emazon.domain.api;
 
 import bootcampragma.emazon.domain.entity.Category;
-
-import java.util.List;
+import bootcampragma.emazon.domain.util.CustomPage;
 
 public interface ICategoryServicePort {
-
     void saveCategory(Category category);
-    List<Category> getAllCategory(Integer page, Integer size, String sortDirection);
 
-
+    CustomPage<Category> getAllCategory(Integer page, Integer size, String sortDirection);
 }

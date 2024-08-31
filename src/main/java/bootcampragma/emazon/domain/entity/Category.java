@@ -2,8 +2,6 @@ package bootcampragma.emazon.domain.entity;
 
 
 public class Category {
-    public static final int MAX_NAME_LENGTH = 50;
-    public static final int MAX_DESCRIPTION_LENGTH = 90;
 
     private Long id;
     private String name;
@@ -17,6 +15,7 @@ public class Category {
         this.name = name;
         this.description = description;
     }
+
 
 
     public Long getId() {

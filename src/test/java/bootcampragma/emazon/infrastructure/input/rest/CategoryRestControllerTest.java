@@ -1,65 +1,88 @@
 package bootcampragma.emazon.infrastructure.input.rest;
-import bootcampragma.emazon.infrastructure.exception.*;
-import bootcampragma.emazon.infrastructure.exceptionhandler.CategoryControllerAdvisor;
+import bootcampragma.emazon.aplication.dto.CategoryRequest;
+import bootcampragma.emazon.aplication.handler.ICategoryHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@ActiveProfiles("test")
+@WebMvcTest(controllers = CategoryRestController.class)
+@Import(bootcampragma.emazon.infrastructure.configuration.TestConfig.class)
 class CategoryRestControllerTest {
 
-    @Test
-    void handleCategoryAlreadyExistsException_ShouldReturnBadRequest() {
-        CategoryControllerAdvisor advisor = new CategoryControllerAdvisor();
-        CategoryAlreadyExistException ex = new CategoryAlreadyExistException();
+ @Autowired
+ private MockMvc mockMvc;
 
-        ResponseEntity<String> response = advisor.handleCategoryAlreadyExistsException(ex);
+ @Mock
+ private ICategoryHandler categoryHandler;
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Category already exists", response.getBody());
-    }
-    @Test
-    void handleCategoryNameEmptyException_ShouldReturnBadRequest() {
-        CategoryControllerAdvisor advisor = new CategoryControllerAdvisor();
-        CategoryNameEmptyException ex = new CategoryNameEmptyException();
 
-        ResponseEntity<String> response = advisor.handleCategoryNameEmptyException(ex);
+ private ObjectMapper objectMapper;
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Name cannot be empty", response.getBody());
-    }
+ @BeforeEach
+ void setUp() {
+  MockitoAnnotations.openMocks(this);
+  objectMapper = new ObjectMapper();
+ }
 
-    @Test
-    void handleCategoryDescriptionEmptyException_ShouldReturnBadRequest() {
-        CategoryControllerAdvisor advisor = new CategoryControllerAdvisor();
-        CategoryDescriptionEmptyException ex = new CategoryDescriptionEmptyException();
+ @Test
+ void saveCategory_ShouldReturnBadRequest_WhenInvalidInput() throws Exception {
+  // Arrange
+  CategoryRequest categoryRequest = new CategoryRequest();
+  categoryRequest.setName(""); // Invalid name
 
-        ResponseEntity<String> response = advisor.handleCategoryDescriptionEmptyException(ex);
+  // Act
+  ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/category")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(categoryRequest)));
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Description cannot be empty", response.getBody());
-    }
+  // Assert
+  result.andExpect(status().isBadRequest());
+ }
 
-    @Test
-    void handleCategoryOversizeDescriptionException_ShouldReturnBadRequest() {
-        CategoryControllerAdvisor advisor = new CategoryControllerAdvisor();
-        CategoryOversizeDescriptionException ex = new CategoryOversizeDescriptionException();
+ @Test
+ void getAllCategory_ShouldReturnInternalServerError_WhenRuntimeException() throws Exception {
+  // Arrange
+  when(categoryHandler.getAllCategory(anyInt(), anyInt(), anyString())).thenThrow(new RuntimeException());
 
-        ResponseEntity<String> response = advisor.handleCategoryOversizeDescriptionException(ex);
+  // Act
+  ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/category/all")
+          .param("page", "0")
+          .param("size", "10")
+          .param("sortDirection", "asc")
+          .accept(MediaType.APPLICATION_JSON));
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Description is too long", response.getBody());
-    }
+  // Assert
+  result.andExpect(status().isInternalServerError());
+ }
 
-    @Test
-    void handleCategoryOversizeNameException_ShouldReturnBadRequest() {
-        CategoryControllerAdvisor advisor = new CategoryControllerAdvisor();
-        CategoryOversizeNameException ex = new CategoryOversizeNameException();
+ @Test
+ void getAllCategory_ShouldReturnBadRequest_WhenInvalidSortDirection() throws Exception {
+  // Act
+  ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/category/all")
+          .param("page", "0")
+          .param("size", "10")
+          .param("sortDirection", "invalid")
+          .accept(MediaType.APPLICATION_JSON));
 
-        ResponseEntity<String> response = advisor.handleCategoryOversizeNameException(ex);
+  // Assert
+  result.andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.error").value("Invalid sort direction"));
+ }
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Name is too long", response.getBody());
-    }
+
 }

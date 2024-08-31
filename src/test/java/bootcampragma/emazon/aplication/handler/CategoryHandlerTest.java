@@ -1,28 +1,27 @@
 package bootcampragma.emazon.aplication.handler;
 
-
-
 import bootcampragma.emazon.aplication.dto.CategoryRequest;
 import bootcampragma.emazon.aplication.dto.CategoryResponse;
 import bootcampragma.emazon.aplication.mapper.CategoryRequestMapper;
 import bootcampragma.emazon.aplication.mapper.CategoryResponseMapper;
-
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
+import bootcampragma.emazon.domain.util.CustomPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 class CategoryHandlerTest {
 
@@ -31,7 +30,6 @@ class CategoryHandlerTest {
 
     @Mock
     private CategoryRequestMapper categoryRequestMapper;
-
 
     @Mock
     private CategoryResponseMapper categoryResponseMapper;
@@ -44,53 +42,62 @@ class CategoryHandlerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
+
     @Test
-    void saveCategory_ShouldCallSaveCategoryOnServicePort() {
-        // Arrange
+    void saveCategory_ShouldReturnCategoryResponse_WhenCategoryRequestIsValid() {
         CategoryRequest categoryRequest = new CategoryRequest();
-        categoryRequest.setName("Category Name");
-        categoryRequest.setDescription("Category Description");
+        categoryRequest.setName("Electronics");
+        categoryRequest.setDescription("Electronic items");
 
-        Category category = new Category(1L, "Category Name", "Category Description");
+        Category category = new Category();
+        category.setName("Electronics");
+        category.setDescription("Electronic items");
 
-        // Mock the mapping
         when(categoryRequestMapper.toRequest(categoryRequest)).thenReturn(category);
+        doNothing().when(categoryServicePort).saveCategory(category);
+        when(categoryResponseMapper.toResponse(category)).thenReturn(new CategoryResponse());
 
-        // Act
-        categoryHandler.saveCategory(categoryRequest);
+        CategoryResponse categoryResponse = categoryHandler.saveCategory(categoryRequest);
 
-        // Assert
-        verify(categoryRequestMapper, times(1)).toRequest(categoryRequest);
-        verify(categoryServicePort, times(1)).saveCategory(category);
+        assertEquals("Electronics", categoryResponse.getName());
+        assertEquals("Electronic items", categoryResponse.getDescription());
     }
 
     @Test
-    void getAllCategory_ShouldReturnMappedResponseList() {
+    void getAllCategory_ShouldThrowException_WhenPageIsNegative() {
         // Arrange
-        Integer page = 0;
+        Integer page = -1;
         Integer size = 10;
-        String sortDirection = "asc";
+        String sortDirection = "ASC";
 
-        Category category1 = new Category(1L, "Category 1", "Description 1");
-        Category category2 = new Category(2L, "Category 2", "Description 2");
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> categoryHandler.getAllCategory(page, size, sortDirection));
+    }
 
-        List<Category> categories = Arrays.asList(category1, category2);
+    @Test
+    void getAllCategory_ShouldReturnPage_WhenCalled() {
+        // Arrange
+        Category category = new Category();
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(category);
+        CustomPage<Category> categoryPage = new CustomPage<>(categoryList, 0, 10, 1, 1);
 
-        CategoryResponse response1 = new CategoryResponse();
-        CategoryResponse response2 = new CategoryResponse();
+        CategoryResponse categoryResponse = new CategoryResponse();
+        List<CategoryResponse> categoryResponseList = new ArrayList<>();
+        categoryResponseList.add(categoryResponse);
 
-        List<CategoryResponse> expectedResponses = Arrays.asList(response1, response2);
-
-        when(categoryServicePort.getAllCategory(page, size, sortDirection)).thenReturn(categories);
-        when(categoryResponseMapper.toResponseList(categories)).thenReturn(expectedResponses);
+        when(categoryServicePort.getAllCategory(anyInt(), anyInt(), any())).thenReturn(categoryPage);
+        when(categoryResponseMapper.toResponseList(categoryPage.getContent())).thenReturn(categoryResponseList);
 
         // Act
-        List<CategoryResponse> actualResponses = categoryHandler.getAllCategory(page, size, sortDirection);
+        CustomPage<CategoryResponse> resultPage = categoryHandler.getAllCategory(0, 10, "ASC");
 
         // Assert
-        assertEquals(expectedResponses, actualResponses);
-        verify(categoryServicePort, times(1)).getAllCategory(page, size, sortDirection);
-        verify(categoryResponseMapper, times(1)).toResponseList(categories);
+        assertEquals(categoryResponseList, resultPage.getContent());
+        assertEquals(categoryPage.getPageNumber(), resultPage.getPageNumber());
+        assertEquals(categoryPage.getPageSize(), resultPage.getPageSize());
+        assertEquals(categoryPage.getTotalElements(), resultPage.getTotalElements());
+        assertEquals(categoryPage.getTotalPages(), resultPage.getTotalPages());
     }
 }
-

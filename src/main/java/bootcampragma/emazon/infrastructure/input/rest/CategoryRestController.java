@@ -3,8 +3,8 @@ package bootcampragma.emazon.infrastructure.input.rest;
 import bootcampragma.emazon.aplication.dto.CategoryRequest;
 import bootcampragma.emazon.aplication.dto.CategoryResponse;
 import bootcampragma.emazon.aplication.handler.ICategoryHandler;
-
-
+import bootcampragma.emazon.domain.util.CustomPage;
+import bootcampragma.emazon.infrastructure.exception.category.InvalidSortDirectionException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/category")
@@ -35,24 +35,33 @@ public class CategoryRestController {
     public ResponseEntity<Void> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
         categoryHandler.saveCategory(categoryRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
-
     }
+
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryResponse>> getAllCategory(
+    public ResponseEntity<CustomPage<CategoryResponse>> getAllCategory(
             @RequestParam Integer page,
             @RequestParam Integer size,
-            @RequestParam(required = false) String sortDirection) {
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+
         try {
-            List<CategoryResponse> categories = categoryHandler.getAllCategory(page, size, sortDirection);
-            if (categories.isEmpty()) {
+            if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
+                throw new InvalidSortDirectionException("Invalid sort direction");
+            }
+
+            CustomPage<CategoryResponse> customPage = categoryHandler.getAllCategory(page, size, sortDirection);
+
+            if (customPage.getContent().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            return ResponseEntity.ok(categories);
+
+            return ResponseEntity.ok(customPage);
+
+        } catch (InvalidSortDirectionException e) {
+            CustomPage<CategoryResponse> emptyPage = new CustomPage<>(Collections.emptyList(), 0, size, 0L, 0);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(emptyPage);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }
-
