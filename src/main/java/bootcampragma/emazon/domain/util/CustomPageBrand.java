@@ -1,16 +1,15 @@
 package bootcampragma.emazon.domain.util;
 
-
 import java.util.List;
 
-public class CustomPage<T> {
+public class CustomPageBrand<T> {
     private final List<T> content;
     private final int pageNumber;
     private final int pageSize;
     private final long totalElements;
     private final int totalPages;
 
-    public CustomPage(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPages) {
+    public CustomPageBrand(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPages) {
         this.content = content;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
@@ -38,5 +37,4 @@ public class CustomPage<T> {
     public int getTotalPages() {
         return totalPages;
     }
-
 }

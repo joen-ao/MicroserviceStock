@@ -1,44 +1,120 @@
 package bootcampragma.emazon.infrastructure.input.rest;
 
 import bootcampragma.emazon.aplication.dto.BrandRequest;
+import bootcampragma.emazon.aplication.dto.BrandResponse;
 import bootcampragma.emazon.aplication.handler.IBrandHandler;
+import bootcampragma.emazon.domain.util.CustomPageBrand;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.openMocks;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
+
+import java.util.Collections;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@ActiveProfiles("test")
+@WebMvcTest(controllers = BrandRestController.class)
+@Import(bootcampragma.emazon.infrastructure.configuration.TestConfig.class)
 class BrandRestControllerTest {
 
-    @InjectMocks
-    private BrandRestController brandRestController;
+    @Autowired
+    private MockMvc mockMvc;
 
     @Mock
     private IBrandHandler brandHandler;
 
+    private ObjectMapper objectMapper;
+
     @BeforeEach
-    public void setUp() {
-        openMocks(this);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        objectMapper = new ObjectMapper();
+        BrandRestController brandRestController = new BrandRestController(brandHandler);
+        mockMvc = MockMvcBuilders.standaloneSetup(brandRestController).build();
     }
 
     @Test
-    void saveBrand_ShouldReturnCreated() {
+    void saveBrand_ShouldReturnBadRequest_WhenInvalidInput() throws Exception {
+        // Arrange
+        BrandRequest brandRequest = new BrandRequest();
+        brandRequest.setName(""); // Invalid name
+
+        // Act
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/brand")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(brandRequest)));
+
+        // Assert
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void saveBrand_ShouldReturnCreated_WhenValidInput() throws Exception {
         // Arrange
         BrandRequest brandRequest = new BrandRequest();
         brandRequest.setName("Nike");
         brandRequest.setDescription("Sports brand");
 
         // Act
-        ResponseEntity<Void> response = brandRestController.saveBrand(brandRequest);
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/brand")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(brandRequest)));
 
         // Assert
-        verify(brandHandler).saveBrand(brandRequest);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        result.andExpect(status().isCreated());
+        verify(brandHandler, times(1)).saveBrand(any(BrandRequest.class));
     }
-}
 
+    @Test
+    void getAllBrand_ShouldReturnInternalServerError_WhenRuntimeException() throws Exception {
+        // Arrange
+        when(brandHandler.getAllBrand(anyInt(), anyInt(), anyString())).thenThrow(new RuntimeException());
+
+        // Act
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/brand/all")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sortDirection", "asc")
+                .accept(MediaType.APPLICATION_JSON));
+
+        // Assert
+        result.andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void getAllBrand_ShouldReturnNotFound_WhenNoBrands() throws Exception {
+        // Arrange
+        CustomPageBrand<BrandResponse> emptyPage = new CustomPageBrand<>(Collections.emptyList(), 0, 10, 0L, 0);
+        when(brandHandler.getAllBrand(anyInt(), anyInt(), anyString())).thenReturn(emptyPage);
+
+        // Act
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/brand/all")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sortDirection", "asc")
+                .accept(MediaType.APPLICATION_JSON));
+
+        // Assert
+        result.andExpect(status().isNotFound());
+    }
+
+
+}

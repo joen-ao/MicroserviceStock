@@ -3,6 +3,7 @@ package bootcampragma.emazon.domain.usecase;
 import bootcampragma.emazon.domain.api.IBrandServicePort;
 import bootcampragma.emazon.domain.entity.Brand;
 import bootcampragma.emazon.domain.spi.IBrandPersistencePort;
+import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.exception.brand.BrandAlreadyExistException;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.IBrandRepository;
 
@@ -23,5 +24,10 @@ public class BrandUseCase implements IBrandServicePort {
             throw new BrandAlreadyExistException();
         }
         brandPersistencePort.saveBrand(brand);
+    }
+
+    @Override
+    public CustomPage<Brand> getAllBrand(Integer page, Integer size, String sortDirection) {
+        return brandPersistencePort.getAllBrand(page, size, sortDirection);
     }
 }

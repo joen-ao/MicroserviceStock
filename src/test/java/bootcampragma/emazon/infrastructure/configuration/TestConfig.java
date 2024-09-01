@@ -1,5 +1,6 @@
 package bootcampragma.emazon.infrastructure.configuration;
 
+import bootcampragma.emazon.aplication.handler.IBrandHandler;
 import bootcampragma.emazon.aplication.handler.ICategoryHandler;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -13,5 +14,11 @@ public class TestConfig {
     @Primary
     public ICategoryHandler categoryHandler() {
         return mock(ICategoryHandler.class);
+    }
+
+    @Bean
+    @Primary
+    public IBrandHandler brandHandler() {
+        return mock(IBrandHandler.class);
     }
 }
