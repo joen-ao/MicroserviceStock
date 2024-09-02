@@ -1,7 +1,7 @@
 package bootcampragma.emazon.infrastructure.input.rest;
-import bootcampragma.emazon.aplication.dto.CategoryRequest;
-import bootcampragma.emazon.aplication.dto.CategoryResponse;
-import bootcampragma.emazon.aplication.handler.ICategoryHandler;
+import bootcampragma.emazon.aplication.dto.request.CategoryRequest;
+import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
+import bootcampragma.emazon.aplication.handler.interfaces.ICategoryHandler;
 import bootcampragma.emazon.domain.util.CustomPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

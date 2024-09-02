@@ -1,4 +1,4 @@
-package bootcampragma.emazon.aplication.dto;
+package bootcampragma.emazon.aplication.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;

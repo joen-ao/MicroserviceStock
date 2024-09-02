@@ -1,8 +1,10 @@
 package bootcampragma.emazon.aplication.handler;
 
-import bootcampragma.emazon.aplication.dto.CategoryRequest;
-import bootcampragma.emazon.aplication.dto.CategoryResponse;
-import bootcampragma.emazon.aplication.mapper.CategoryResponseMapper;
+import bootcampragma.emazon.aplication.dto.request.CategoryRequest;
+import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
+import bootcampragma.emazon.aplication.handler.interfaces.ICategoryHandler;
+import bootcampragma.emazon.aplication.mapper.request.CategoryRequestMapper;
+import bootcampragma.emazon.aplication.mapper.response.CategoryResponseMapper;
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.util.CustomPage;
@@ -18,16 +20,15 @@ import java.util.List;
 public class CategoryHandler implements ICategoryHandler {
 
     private final ICategoryServicePort categoryServicePort;
+    private final CategoryRequestMapper categoryRequestMapper;
     private final CategoryResponseMapper categoryResponseMapper;
 
     @Override
-    public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
-        // Logic to save the category and return a CategoryResponse
-        CategoryResponse categoryResponse = new CategoryResponse();
-        categoryResponse.setId(1L); // Example of generated ID
-        categoryResponse.setName(categoryRequest.getName());
-        categoryResponse.setDescription(categoryRequest.getDescription());
-        return categoryResponse;
+    public void saveCategory(CategoryRequest categoryRequest) {
+        if (categoryRequest == null) {
+            throw new IllegalArgumentException("Brand request cannot be null");
+        }
+        categoryServicePort.saveCategory(categoryRequestMapper.toRequest(categoryRequest));
     }
 
     @Override

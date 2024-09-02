@@ -4,6 +4,7 @@ import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.CategoryEntity;
 import bootcampragma.emazon.domain.util.CustomPage;
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface CategoryEntityMapper {
 
+    @Named("toCategoryEntity")
     CategoryEntity toCategoryEntity(Category category);
 
     Category toDomainCategory(CategoryEntity categoryEntity);
@@ -28,5 +30,12 @@ public interface CategoryEntityMapper {
                 categoryEntityPage.getTotalElements(),
                 categoryEntityPage.getTotalPages()
         );
+    }
+
+    @Named("toCategoryEntity")
+    default CategoryEntity toCategoryEntity(Long categoryId) {  // Nombre corregido para que coincida
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(categoryId);
+        return categoryEntity;
     }
 }

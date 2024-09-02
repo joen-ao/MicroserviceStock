@@ -1,8 +1,8 @@
 package bootcampragma.emazon.infrastructure.input.rest;
 
-import bootcampragma.emazon.aplication.dto.BrandRequest;
-import bootcampragma.emazon.aplication.dto.BrandResponse;
-import bootcampragma.emazon.aplication.handler.IBrandHandler;
+import bootcampragma.emazon.aplication.dto.request.BrandRequest;
+import bootcampragma.emazon.aplication.dto.response.BrandResponse;
+import bootcampragma.emazon.aplication.handler.interfaces.IBrandHandler;
 import bootcampragma.emazon.domain.util.CustomPageBrand;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

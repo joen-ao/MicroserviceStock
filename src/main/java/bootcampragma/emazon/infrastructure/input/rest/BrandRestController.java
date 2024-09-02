@@ -1,10 +1,10 @@
 package bootcampragma.emazon.infrastructure.input.rest;
 
-import bootcampragma.emazon.aplication.dto.BrandRequest;
-import bootcampragma.emazon.aplication.dto.BrandResponse;
-import bootcampragma.emazon.aplication.handler.IBrandHandler;
+import bootcampragma.emazon.aplication.dto.request.BrandRequest;
+import bootcampragma.emazon.aplication.dto.response.BrandResponse;
+import bootcampragma.emazon.aplication.handler.interfaces.IBrandHandler;
 import bootcampragma.emazon.domain.util.CustomPageBrand;
-import bootcampragma.emazon.infrastructure.exception.category.InvalidSortDirectionException;
+import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
