@@ -3,7 +3,7 @@ package bootcampragma.emazon.domain.usecase;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
 import bootcampragma.emazon.domain.util.CustomPage;
-import bootcampragma.emazon.infrastructure.exception.category.CategoryAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

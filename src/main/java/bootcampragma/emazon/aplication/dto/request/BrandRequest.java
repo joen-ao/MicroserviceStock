@@ -1,4 +1,4 @@
-package bootcampragma.emazon.aplication.dto;
+package bootcampragma.emazon.aplication.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

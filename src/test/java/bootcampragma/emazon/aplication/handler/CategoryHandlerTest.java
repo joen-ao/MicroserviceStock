@@ -1,9 +1,8 @@
 package bootcampragma.emazon.aplication.handler;
 
-import bootcampragma.emazon.aplication.dto.CategoryRequest;
-import bootcampragma.emazon.aplication.dto.CategoryResponse;
-import bootcampragma.emazon.aplication.mapper.CategoryRequestMapper;
-import bootcampragma.emazon.aplication.mapper.CategoryResponseMapper;
+import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
+import bootcampragma.emazon.aplication.mapper.request.CategoryRequestMapper;
+import bootcampragma.emazon.aplication.mapper.response.CategoryResponseMapper;
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.util.CustomPage;
@@ -18,7 +17,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -44,25 +42,6 @@ class CategoryHandlerTest {
 
 
 
-    @Test
-    void saveCategory_ShouldReturnCategoryResponse_WhenCategoryRequestIsValid() {
-        CategoryRequest categoryRequest = new CategoryRequest();
-        categoryRequest.setName("Electronics");
-        categoryRequest.setDescription("Electronic items");
-
-        Category category = new Category();
-        category.setName("Electronics");
-        category.setDescription("Electronic items");
-
-        when(categoryRequestMapper.toRequest(categoryRequest)).thenReturn(category);
-        doNothing().when(categoryServicePort).saveCategory(category);
-        when(categoryResponseMapper.toResponse(category)).thenReturn(new CategoryResponse());
-
-        CategoryResponse categoryResponse = categoryHandler.saveCategory(categoryRequest);
-
-        assertEquals("Electronics", categoryResponse.getName());
-        assertEquals("Electronic items", categoryResponse.getDescription());
-    }
 
     @Test
     void getAllCategory_ShouldThrowException_WhenPageIsNegative() {

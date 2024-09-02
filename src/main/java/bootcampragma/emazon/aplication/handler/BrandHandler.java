@@ -1,9 +1,10 @@
 package bootcampragma.emazon.aplication.handler;
 
-import bootcampragma.emazon.aplication.dto.BrandRequest;
-import bootcampragma.emazon.aplication.dto.BrandResponse;
-import bootcampragma.emazon.aplication.mapper.BrandRequestMapper;
-import bootcampragma.emazon.aplication.mapper.BrandResponseMapper;
+import bootcampragma.emazon.aplication.dto.request.BrandRequest;
+import bootcampragma.emazon.aplication.dto.response.BrandResponse;
+import bootcampragma.emazon.aplication.handler.interfaces.IBrandHandler;
+import bootcampragma.emazon.aplication.mapper.request.BrandRequestMapper;
+import bootcampragma.emazon.aplication.mapper.response.BrandResponseMapper;
 import bootcampragma.emazon.domain.api.IBrandServicePort;
 import bootcampragma.emazon.domain.entity.Brand;
 import bootcampragma.emazon.domain.util.CustomPage;

@@ -1,6 +1,6 @@
-package bootcampragma.emazon.aplication.mapper;
+package bootcampragma.emazon.aplication.mapper.response;
 
-import bootcampragma.emazon.aplication.dto.CategoryResponse;
+import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
 import bootcampragma.emazon.domain.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

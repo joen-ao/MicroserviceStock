@@ -1,9 +1,11 @@
 package bootcampragma.emazon.infrastructure.exceptionHandler;
 
-import bootcampragma.emazon.aplication.handler.ICategoryHandler;
-import bootcampragma.emazon.infrastructure.exception.brand.BrandAlreadyExistException;
-import bootcampragma.emazon.infrastructure.exception.category.CategoryAlreadyExistException;
-import bootcampragma.emazon.infrastructure.exception.category.InvalidSortDirectionException;
+import bootcampragma.emazon.aplication.handler.interfaces.ICategoryHandler;
+import bootcampragma.emazon.domain.exception.article.CategoriesSizeException;
+import bootcampragma.emazon.domain.exception.article.DuplicateCategoriesException;
+import bootcampragma.emazon.domain.exception.brand.BrandAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 import bootcampragma.emazon.infrastructure.exceptionhandler.GlobalControllerAdvisor;
 import bootcampragma.emazon.infrastructure.input.rest.CategoryRestController;
 import org.junit.jupiter.api.BeforeEach;
@@ -122,4 +124,34 @@ class GlobalControllerAdvisorTest {
      void dummyMethod() {
         // Este método es un marcador de posición y no necesita lógica
     }
+
+    @Test
+void handleDuplicateCategoriesException_ShouldReturnBadRequest() {
+    // Arrange
+    DuplicateCategoriesException ex = new DuplicateCategoriesException();
+    Map<String, String> expectedResponse = new HashMap<>();
+    expectedResponse.put("error", "Duplicate categories are not allowed");
+
+    // Act
+    ResponseEntity<Map<String, String>> response = globalControllerAdvisor.handleDuplicateCategoriesException(ex);
+
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(expectedResponse, response.getBody());
+}
+
+@Test
+void handleCategoriesSizeException_ShouldReturnBadRequest() {
+    // Arrange
+    CategoriesSizeException ex = new CategoriesSizeException();
+    Map<String, String> expectedResponse = new HashMap<>();
+    expectedResponse.put("error", "Categories size must be between 1 and 3");
+
+    // Act
+    ResponseEntity<Map<String, String>> response = globalControllerAdvisor.handleCategoriesSizeException(ex);
+
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(expectedResponse, response.getBody());
+}
 }

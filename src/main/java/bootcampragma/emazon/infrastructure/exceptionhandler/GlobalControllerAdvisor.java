@@ -1,8 +1,10 @@
 package bootcampragma.emazon.infrastructure.exceptionhandler;
 
-import bootcampragma.emazon.infrastructure.exception.brand.BrandAlreadyExistException;
-import bootcampragma.emazon.infrastructure.exception.category.CategoryAlreadyExistException;
-import bootcampragma.emazon.infrastructure.exception.category.InvalidSortDirectionException;
+import bootcampragma.emazon.domain.exception.article.CategoriesSizeException;
+import bootcampragma.emazon.domain.exception.article.DuplicateCategoriesException;
+import bootcampragma.emazon.domain.exception.brand.BrandAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,6 +20,20 @@ import java.util.Map;
 public class GlobalControllerAdvisor {
 
     private static final String ERROR_KEY = "error";
+
+    @ExceptionHandler(DuplicateCategoriesException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateCategoriesException(DuplicateCategoriesException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(ERROR_KEY, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoriesSizeException.class)
+    public ResponseEntity<Map<String, String>> handleCategoriesSizeException(CategoriesSizeException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(ERROR_KEY, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(BrandAlreadyExistException.class)
     public ResponseEntity<Map<String, String>> handleBrandAlreadyExistException(BrandAlreadyExistException ex) {

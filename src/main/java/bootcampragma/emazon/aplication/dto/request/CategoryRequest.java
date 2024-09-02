@@ -1,4 +1,4 @@
-package bootcampragma.emazon.aplication.dto;
+package bootcampragma.emazon.aplication.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,5 +20,4 @@ public class CategoryRequest {
     @NotNull(message = "Description is required")
     @NotBlank(message = "Description is required")
     private String description;
-
 }

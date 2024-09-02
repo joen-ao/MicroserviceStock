@@ -4,7 +4,7 @@ import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
 import bootcampragma.emazon.domain.util.CustomPage;
-import bootcampragma.emazon.infrastructure.exception.category.CategoryAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 
 public class CategoryUseCase implements ICategoryServicePort {
@@ -22,6 +22,7 @@ public class CategoryUseCase implements ICategoryServicePort {
         if (categoryRepository.existsByName(category.getName())) {
             throw new CategoryAlreadyExistException();
         }
+
         categoryPersistencePort.saveCategory(category);
     }
 

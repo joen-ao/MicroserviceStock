@@ -1,4 +1,4 @@
-package bootcampragma.emazon.infrastructure.exception.brand;
+package bootcampragma.emazon.domain.exception.brand;
 
 public class BrandAlreadyExistException extends RuntimeException{
     public BrandAlreadyExistException(){

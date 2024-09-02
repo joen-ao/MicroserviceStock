@@ -1,4 +1,4 @@
-package bootcampragma.emazon.infrastructure.exception.category;
+package bootcampragma.emazon.domain.exception.category;
 
 public class CategoryAlreadyExistException extends RuntimeException {
     public CategoryAlreadyExistException() {

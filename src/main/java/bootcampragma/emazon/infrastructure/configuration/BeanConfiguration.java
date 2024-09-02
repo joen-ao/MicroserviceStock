@@ -1,15 +1,21 @@
 package bootcampragma.emazon.infrastructure.configuration;
 
+import bootcampragma.emazon.domain.api.IArticleServicePort;
 import bootcampragma.emazon.domain.api.IBrandServicePort;
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
+import bootcampragma.emazon.domain.spi.IArticlePersistencePort;
 import bootcampragma.emazon.domain.spi.IBrandPersistencePort;
 import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
+import bootcampragma.emazon.domain.usecase.ArticleUseCase;
 import bootcampragma.emazon.domain.usecase.BrandUseCase;
 import bootcampragma.emazon.domain.usecase.CategoryUseCase;
+import bootcampragma.emazon.infrastructure.output.jpa.adapter.ArticleJpaAdapter;
 import bootcampragma.emazon.infrastructure.output.jpa.adapter.BrandJpaAdapter;
 import bootcampragma.emazon.infrastructure.output.jpa.adapter.CategoryJpaAdapter;
+import bootcampragma.emazon.infrastructure.output.jpa.mapper.ArticleEntityMapper;
 import bootcampragma.emazon.infrastructure.output.jpa.mapper.BrandEntityMapper;
 import bootcampragma.emazon.infrastructure.output.jpa.mapper.CategoryEntityMapper;
+import bootcampragma.emazon.infrastructure.output.jpa.repository.IArticleRepository;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.IBrandRepository;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -26,6 +32,8 @@ public class BeanConfiguration {
     private final CategoryEntityMapper categoryEntityMapper;
     private final IBrandRepository brandRepository;
     private final BrandEntityMapper brandEntityMapper;
+    private final IArticleRepository articleRepository;
+    private final ArticleEntityMapper articleEntityMapper;
 
     @Bean
     public ICategoryPersistencePort categoryPersistencePort() {
@@ -46,6 +54,17 @@ public class BeanConfiguration {
     public IBrandServicePort brandServicePort(){
         return new BrandUseCase(brandPersistencePort(), brandRepository);
     }
+
+    @Bean
+    public IArticlePersistencePort articlePersistencePort() {
+        return new ArticleJpaAdapter(articleRepository, articleEntityMapper);
+    }
+
+    @Bean
+    public IArticleServicePort articleServicePort(){
+        return new ArticleUseCase(articlePersistencePort());
+    }
+
 
     @Bean
     public OpenAPI customOpenAPI() {

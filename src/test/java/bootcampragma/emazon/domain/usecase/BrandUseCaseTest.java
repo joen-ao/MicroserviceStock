@@ -9,7 +9,7 @@ import org.mockito.Mock;
 
 
 import bootcampragma.emazon.domain.entity.Brand;
-import bootcampragma.emazon.infrastructure.exception.brand.BrandAlreadyExistException;
+import bootcampragma.emazon.domain.exception.brand.BrandAlreadyExistException;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

@@ -1,6 +1,6 @@
-package bootcampragma.emazon.aplication.mapper;
+package bootcampragma.emazon.aplication.mapper.response;
 
-import bootcampragma.emazon.aplication.dto.BrandResponse;
+import bootcampragma.emazon.aplication.dto.response.BrandResponse;
 import bootcampragma.emazon.domain.entity.Brand;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
