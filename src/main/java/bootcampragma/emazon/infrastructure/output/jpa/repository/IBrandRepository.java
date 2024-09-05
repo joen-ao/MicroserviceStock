@@ -3,7 +3,8 @@ package bootcampragma.emazon.infrastructure.output.jpa.repository;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.BrandEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IBrandRepository extends JpaRepository<BrandEntity, Long> {
+import java.util.Optional;
 
-    boolean existsByName(String name);
+public interface IBrandRepository extends JpaRepository<BrandEntity, Long> {
+    Optional<BrandEntity> existsByName(String name);
 }

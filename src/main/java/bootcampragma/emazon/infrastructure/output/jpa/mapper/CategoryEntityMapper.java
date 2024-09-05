@@ -8,6 +8,7 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -16,6 +17,15 @@ public interface CategoryEntityMapper {
 
     @Named("toCategoryEntity")
     CategoryEntity toCategoryEntity(Category category);
+
+
+    @Named("toCategoryEntityListToIdList")
+    default List<Long> toCategoryEntityListToIdList(List<CategoryEntity> categoryEntities) {
+        return categoryEntities.stream()
+                .map(CategoryEntity::getId)
+                .collect(Collectors.toList());
+    }
+
 
     Category toDomainCategory(CategoryEntity categoryEntity);
 
@@ -33,7 +43,7 @@ public interface CategoryEntityMapper {
     }
 
     @Named("toCategoryEntity")
-    default CategoryEntity toCategoryEntity(Long categoryId) {  // Nombre corregido para que coincida
+    default CategoryEntity toCategoryEntity(Long categoryId) {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setId(categoryId);
         return categoryEntity;

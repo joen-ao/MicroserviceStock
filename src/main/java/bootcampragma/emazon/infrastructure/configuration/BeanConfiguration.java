@@ -52,7 +52,7 @@ public class BeanConfiguration {
 
     @Bean
     public IBrandServicePort brandServicePort(){
-        return new BrandUseCase(brandPersistencePort(), brandRepository);
+        return new BrandUseCase(brandPersistencePort());
     }
 
     @Bean

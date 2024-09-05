@@ -3,7 +3,7 @@ package bootcampragma.emazon.infrastructure.input.rest;
 import bootcampragma.emazon.aplication.dto.request.BrandRequest;
 import bootcampragma.emazon.aplication.dto.response.BrandResponse;
 import bootcampragma.emazon.aplication.handler.interfaces.IBrandHandler;
-import bootcampragma.emazon.domain.util.CustomPageBrand;
+import bootcampragma.emazon.domain.util.CustomPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,7 +102,7 @@ class BrandRestControllerTest {
     @Test
     void getAllBrand_ShouldReturnNotFound_WhenNoBrands() throws Exception {
         // Arrange
-        CustomPageBrand<BrandResponse> emptyPage = new CustomPageBrand<>(Collections.emptyList(), 0, 10, 0L, 0);
+        CustomPage<BrandResponse> emptyPage = new CustomPage<>(Collections.emptyList(), 0, 10, 0L, 0);
         when(brandHandler.getAllBrand(anyInt(), anyInt(), anyString())).thenReturn(emptyPage);
 
         // Act

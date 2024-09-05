@@ -13,6 +13,6 @@ public class ArticleResponse {
     private String description;
     private Double price;
     private Integer stock;
-    private Long brandId;
-    private List<Long> categoriesId;
+    private BrandResponse brand;
+    private List<CategoryResponse> categories;
 }

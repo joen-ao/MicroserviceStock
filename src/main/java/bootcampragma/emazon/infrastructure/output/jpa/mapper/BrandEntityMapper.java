@@ -31,7 +31,7 @@ public interface BrandEntityMapper {
     }
 
     @Named("toBrandEntity")
-    default BrandEntity toBrandEntity(Long brandId) {  // Nombre corregido para que coincida
+    default BrandEntity toBrandEntity(Long brandId) {
         BrandEntity brandEntity = new BrandEntity();
         brandEntity.setId(brandId);
         return brandEntity;

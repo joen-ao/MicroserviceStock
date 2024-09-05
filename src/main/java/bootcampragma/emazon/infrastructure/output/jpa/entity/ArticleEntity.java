@@ -3,7 +3,6 @@ package bootcampragma.emazon.infrastructure.output.jpa.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "article")
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -24,6 +22,10 @@ public class ArticleEntity {
     private BigDecimal price;
     private Long stock;
 
+    public ArticleEntity() {
+        //
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     private BrandEntity brand;
 
@@ -32,4 +34,8 @@ public class ArticleEntity {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<CategoryEntity> categories;
+
+
+
+
 }

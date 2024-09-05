@@ -80,4 +80,6 @@ public class Article {
     public void setCategoriesId(List<Long> categoriesId) {
         this.categoriesId = categoriesId;
     }
+
+
 }
