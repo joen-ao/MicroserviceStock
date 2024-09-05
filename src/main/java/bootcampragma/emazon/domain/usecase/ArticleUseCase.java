@@ -5,6 +5,7 @@ import bootcampragma.emazon.domain.entity.Article;
 import bootcampragma.emazon.domain.exception.article.CategoriesSizeException;
 import bootcampragma.emazon.domain.exception.article.DuplicateCategoriesException;
 import bootcampragma.emazon.domain.spi.IArticlePersistencePort;
+import bootcampragma.emazon.domain.util.CustomArticlePage;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -30,5 +31,10 @@ public class ArticleUseCase implements IArticleServicePort {
         }
 
         articlePersistencePort.saveArticle(article);
+    }
+
+    @Override
+    public CustomArticlePage<Article> getAllArticle(Integer page, Integer size, String sortDirection,  String sortBy) {
+        return articlePersistencePort.getAllArticle(page, size, sortDirection, sortBy);
     }
 }

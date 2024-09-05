@@ -4,7 +4,6 @@ import bootcampragma.emazon.aplication.dto.request.CategoryRequest;
 import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
 import bootcampragma.emazon.aplication.handler.interfaces.ICategoryHandler;
 import bootcampragma.emazon.domain.util.CustomPage;
-import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/category")
@@ -43,25 +41,6 @@ public class CategoryRestController {
             @RequestParam Integer size,
             @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
 
-        try {
-            if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
-                throw new InvalidSortDirectionException("Invalid sort direction");
-            }
-
-            CustomPage<CategoryResponse> customPage = categoryHandler.getAllCategory(page, size, sortDirection);
-
-            if (customPage.getContent().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-
-            return ResponseEntity.ok(customPage);
-
-        } catch (InvalidSortDirectionException e) {
-            CustomPage<CategoryResponse> emptyPage = new CustomPage<>(Collections.emptyList(), 0, size, 0L, 0);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(emptyPage);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(categoryHandler.getAllCategory(page, size, sortDirection));
     }
 }

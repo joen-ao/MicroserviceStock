@@ -7,8 +7,8 @@ import bootcampragma.emazon.aplication.mapper.request.BrandRequestMapper;
 import bootcampragma.emazon.aplication.mapper.response.BrandResponseMapper;
 import bootcampragma.emazon.domain.api.IBrandServicePort;
 import bootcampragma.emazon.domain.entity.Brand;
+import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 import bootcampragma.emazon.domain.util.CustomPage;
-import bootcampragma.emazon.domain.util.CustomPageBrand;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,15 +33,25 @@ public class BrandHandler implements IBrandHandler {
     }
 
     @Override
-    public CustomPageBrand<BrandResponse> getAllBrand(Integer page, Integer size, String sortDirection) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Page number cannot be negative");
+    public CustomPage<BrandResponse> getAllBrand(Integer page, Integer size, String sortDirection) {
+        if (page < 0 ) {
+            throw new IllegalArgumentException("Page number cannot be negative and null");
+        }
+        if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
+            throw new InvalidSortDirectionException("Invalid sort direction");
+        }
+        if(size == null || size < 0){
+            throw new IllegalArgumentException("Size number cannot be negative and null");
+        }
+        if(sortDirection == null || sortDirection.isEmpty()){
+            throw new IllegalArgumentException("sort direction cannot be negative and null");
         }
 
-        CustomPage<Brand> brandPage = brandServicePort.getAllBrand(page, size, sortDirection);
-        List<BrandResponse> brandResponses = brandResponseMapper.toResponseList(brandPage.getContent());  // Usando BrandResponseMapper
 
-        return new CustomPageBrand<>(
+        CustomPage<Brand> brandPage = brandServicePort.getAllBrand(page, size, sortDirection);
+        List<BrandResponse> brandResponses = brandResponseMapper.toResponseList(brandPage.getContent());
+
+        return new CustomPage<>(
                 brandResponses,
                 brandPage.getPageNumber(),
                 brandPage.getPageSize(),

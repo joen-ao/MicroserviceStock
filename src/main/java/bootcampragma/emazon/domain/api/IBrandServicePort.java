@@ -6,4 +6,5 @@ import bootcampragma.emazon.domain.util.CustomPage;
 public interface IBrandServicePort {
     void saveBrand(Brand brand);
     CustomPage<Brand> getAllBrand(Integer page, Integer size, String sortDirection);
+    Brand findById(Long id);
 }

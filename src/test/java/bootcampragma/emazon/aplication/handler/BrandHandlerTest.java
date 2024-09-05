@@ -7,7 +7,6 @@ import bootcampragma.emazon.aplication.mapper.response.BrandResponseMapper;
 import bootcampragma.emazon.domain.api.IBrandServicePort;
 import bootcampragma.emazon.domain.entity.Brand;
 import bootcampragma.emazon.domain.util.CustomPage;
-import bootcampragma.emazon.domain.util.CustomPageBrand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -76,7 +75,7 @@ class BrandHandlerTest {
         when(brandResponseMapper.toResponseList(brandPage.getContent())).thenReturn(brandResponseList);
 
         // Act
-        CustomPageBrand<BrandResponse> resultPage = brandHandler.getAllBrand(0, 10, "ASC");
+        CustomPage<BrandResponse> resultPage = brandHandler.getAllBrand(0, 10, "ASC");
 
         // Assert
         assertEquals(brandResponseList, resultPage.getContent());

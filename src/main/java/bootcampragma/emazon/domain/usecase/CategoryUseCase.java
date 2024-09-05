@@ -7,6 +7,8 @@ import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 
+import java.util.List;
+
 public class CategoryUseCase implements ICategoryServicePort {
 
     private final ICategoryPersistencePort categoryPersistencePort;
@@ -30,5 +32,10 @@ public class CategoryUseCase implements ICategoryServicePort {
     public CustomPage<Category> getAllCategory(Integer page, Integer size, String sortDirection) {
 
         return categoryPersistencePort.getAllCategory(page, size, sortDirection);
+    }
+
+    @Override
+    public List<Category> findByArticleId(Long articleId) {
+        return List.of();
     }
 }
