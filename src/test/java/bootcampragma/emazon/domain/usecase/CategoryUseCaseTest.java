@@ -33,6 +33,19 @@ class CategoryUseCaseTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
+    @Test
+    void findByArticleId_ShouldReturnEmptyList() {
+        // Arrange
+        Long articleId = 1L;
+
+        // Act
+        List<Category> result = categoryUseCase.findByArticleId(articleId);
+
+        // Assert
+        assertEquals(List.of(), result);
+    }
+
     @Test
     void saveCategory_ShouldThrowException_WhenCategoryAlreadyExists() {
         // Arrange

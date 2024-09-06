@@ -12,4 +12,5 @@ public class CustomArticlePage<T> extends CustomPage<T>{
     public String getSortBy() {
         return sortBy;
     }
+
 }
