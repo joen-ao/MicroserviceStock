@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/brand")
 @RequiredArgsConstructor
@@ -40,12 +39,23 @@ public class BrandRestController {
         brandHandler.saveBrand(brandRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @Operation(summary = "Get all brands", description = "This endpoint returns a paginated list of all brands.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of brands"),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
     @GetMapping("/all")
     public ResponseEntity<CustomPage<BrandResponse>> getAllBrand(
-            @RequestParam Integer page,
-            @RequestParam Integer size,
-            @RequestParam(required = false, defaultValue = "asc") String sortDirection) {
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
 
-       return ResponseEntity.ok(brandHandler.getAllBrand(page, size, sortDirection));
+        CustomPage<BrandResponse> brandResponses = brandHandler.getAllBrand(page, size, sortDirection);
+        if (brandResponses.getContent().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(brandHandler.getAllBrand(page, size, sortDirection));
     }
 }

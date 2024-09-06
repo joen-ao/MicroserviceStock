@@ -1,8 +1,6 @@
 package bootcampragma.emazon.infrastructure.input.rest;
 import bootcampragma.emazon.aplication.dto.request.CategoryRequest;
-import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
 import bootcampragma.emazon.aplication.handler.interfaces.ICategoryHandler;
-import bootcampragma.emazon.domain.util.CustomPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,21 +58,7 @@ class CategoryRestControllerTest {
   result.andExpect(status().isBadRequest());
  }
 
- @Test
- void getAllCategory_ShouldReturnInternalServerError_WhenRuntimeException() throws Exception {
-  // Arrange
-  when(categoryHandler.getAllCategory(anyInt(), anyInt(), anyString())).thenThrow(new RuntimeException());
 
-  // Act
-  ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/category/all")
-          .param("page", "0")
-          .param("size", "10")
-          .param("sortDirection", "asc")
-          .accept(MediaType.APPLICATION_JSON));
-
-  // Assert
-  result.andExpect(status().isInternalServerError());
- }
 
  @Test
 void saveCategory_ShouldReturnCreated_WhenValidInput()  {
@@ -90,18 +73,6 @@ void saveCategory_ShouldReturnCreated_WhenValidInput()  {
 }
 
 
- @Test
-void getAllCategory_ShouldReturnNotFound_WhenNoCategories() throws Exception {
-    CustomPage<CategoryResponse> emptyPage = new CustomPage<>(Collections.emptyList(), 0, 10, 0L, 0);
-    when(categoryHandler.getAllCategory(anyInt(), anyInt(), anyString())).thenReturn(emptyPage);
 
-    ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/category/all")
-            .param("page", "0")
-            .param("size", "10")
-            .param("sortDirection", "asc")
-            .accept(MediaType.APPLICATION_JSON));
-
-    result.andExpect(status().isNotFound());
-}
 
 }

@@ -9,10 +9,12 @@ import bootcampragma.emazon.infrastructure.output.jpa.repository.IArticleReposit
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -31,18 +33,25 @@ public class ArticleJpaAdapter implements IArticlePersistencePort {
 
     @Override
     public CustomArticlePage<Article> getAllArticle(Integer page, Integer size, String sortDirection, String sortBy) {
-        // Crear PageRequest con los parámetros de paginación y ordenación
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy);
 
-        // Obtener la página de artículos desde el repositorio
-        Page<ArticleEntity> articleEntityPage = articleRepository.findAll(pageRequest);
+        if (sortBy.equals("brand")) {
+            sortBy = "brand.name";
+        } else if (sortBy.equals("categories")) {
+        sortBy = "categories.name";
+        }
 
-        // Mapear las entidades a objetos de dominio Article
-        List<Article> articles = articleEntityPage.getContent().stream()
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<ArticleEntity> articleEntityPage = articleRepository.findAll(pageable);
+
+        List<Article> articles = articleEntityPage.getContent()
+                .stream()
                 .map(articleEntityMapper::toArticle)
-                .toList();
+                .collect(Collectors.toList());
 
-        // Crear y devolver el CustomArticlePage
         return new CustomArticlePage<>(
                 articles,
                 articleEntityPage.getNumber(),
@@ -52,5 +61,6 @@ public class ArticleJpaAdapter implements IArticlePersistencePort {
                 sortBy
         );
     }
+
 
 }

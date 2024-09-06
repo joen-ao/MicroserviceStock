@@ -57,7 +57,6 @@ public class ArticleHandler implements IArticleHandler {
                 categoryResponseMapper
         );
 
-
         return new CustomArticlePage<>(
                 articleResponses,
                 articlePage.getPageNumber(),

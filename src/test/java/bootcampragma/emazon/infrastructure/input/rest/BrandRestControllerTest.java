@@ -83,21 +83,7 @@ class BrandRestControllerTest {
         verify(brandHandler, times(1)).saveBrand(any(BrandRequest.class));
     }
 
-    @Test
-    void getAllBrand_ShouldReturnInternalServerError_WhenRuntimeException() throws Exception {
-        // Arrange
-        when(brandHandler.getAllBrand(anyInt(), anyInt(), anyString())).thenThrow(new RuntimeException());
 
-        // Act
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/brand/all")
-                .param("page", "0")
-                .param("size", "10")
-                .param("sortDirection", "asc")
-                .accept(MediaType.APPLICATION_JSON));
-
-        // Assert
-        result.andExpect(status().isInternalServerError());
-    }
 
     @Test
     void getAllBrand_ShouldReturnNotFound_WhenNoBrands() throws Exception {

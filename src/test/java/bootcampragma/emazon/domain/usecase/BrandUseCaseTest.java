@@ -1,5 +1,6 @@
 package bootcampragma.emazon.domain.usecase;
 
+import bootcampragma.emazon.domain.exception.brand.BrandNotFoundException;
 import bootcampragma.emazon.domain.spi.IBrandPersistencePort;
 import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.IBrandRepository;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BrandUseCaseTest {
 
-    @Mock
-    private IBrandRepository brandRepository;
 
     @Mock
     private IBrandPersistencePort brandPersistencePort;
@@ -38,15 +38,39 @@ class BrandUseCaseTest {
     }
 
     @Test
+    void findById_ShouldThrowBrandNotFoundException_WhenBrandDoesNotExist() {
+        // Arrange
+        Long brandId = 1L;
+        when(brandPersistencePort.findById(brandId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BrandNotFoundException.class, () -> brandUseCase.findById(brandId));
+    }
+    @Test
+    void findById_ShouldReturnBrand_WhenBrandExists() {
+        // Arrange
+        Long brandId = 1L;
+        Brand expectedBrand = new Brand();
+        expectedBrand.setId(brandId);
+        when(brandPersistencePort.findById(brandId)).thenReturn(Optional.of(expectedBrand));
+
+        // Act
+        Brand result = brandUseCase.findById(brandId);
+
+        // Assert
+        assertEquals(expectedBrand, result);
+    }
+
+    @Test
     void saveBrand_WhenBrandDoesNotExist_ShouldSaveBrand() {
         Brand brand = new Brand();
         brand.setName("Nike");
 
-        when(brandRepository.existsByName(brand.getName())).thenReturn(false);
+        when(brandPersistencePort.findByName(brand.getName())).thenReturn(Optional.empty());
 
         brandUseCase.saveBrand(brand);
 
-        verify(brandRepository, times(1)).existsByName(brand.getName());
+        verify(brandPersistencePort, times(1)).findByName(brand.getName());
         verify(brandPersistencePort, times(1)).saveBrand(brand);
     }
 
@@ -55,11 +79,11 @@ class BrandUseCaseTest {
         Brand brand = new Brand();
         brand.setName("Nike");
 
-        when(brandRepository.existsByName(brand.getName())).thenReturn(true);
+        when(brandPersistencePort.findByName(brand.getName())).thenReturn(Optional.of(new Brand()));
 
         assertThrows(BrandAlreadyExistException.class, () -> brandUseCase.saveBrand(brand));
 
-        verify(brandRepository, times(1)).existsByName(brand.getName());
+        verify(brandPersistencePort, times(1)).findByName(brand.getName());
         verify(brandPersistencePort, never()).saveBrand(brand);
     }
     @Test
