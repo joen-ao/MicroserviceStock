@@ -1,41 +1,48 @@
 package bootcampragma.emazon.infrastructure.output.jpa.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "article")
+@Table(name = ArticleEntity.TABLE_NAME )
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class ArticleEntity {
+    public static final String TABLE_NAME = "article";
+    public static final String JOIN_COLUMN_BRAND_ID = "brand_id";
+    public static final String JOIN_TABLE_ARTICLE_CATEGORY = "article_category";
+    public static final String JOIN_COLUMN_ARTICLE_ID = "article_id";
+    public static final String JOIN_COLUMN_CATEGORY_ID = "category_id";
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column( nullable = false, unique = true, length = 60)
     private String name;
+
+    @Column(nullable = false, length = 90)
     private String description;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column( nullable = false)
     private Long stock;
 
-    public ArticleEntity() {
-        //
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = JOIN_COLUMN_BRAND_ID)
+    private BrandEntity brandEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private BrandEntity brand;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "article_category",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<CategoryEntity> categories;
-
-
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = JOIN_TABLE_ARTICLE_CATEGORY,
+            joinColumns = @JoinColumn(name = JOIN_COLUMN_ARTICLE_ID),
+            inverseJoinColumns = @JoinColumn(name = JOIN_COLUMN_CATEGORY_ID))
+    private List<CategoryEntity> categoriesEntity;
 
 }

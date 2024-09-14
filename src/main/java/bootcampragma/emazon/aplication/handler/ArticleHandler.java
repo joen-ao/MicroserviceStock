@@ -4,16 +4,13 @@ import bootcampragma.emazon.aplication.dto.request.ArticleRequest;
 import bootcampragma.emazon.aplication.dto.response.ArticleResponse;
 import bootcampragma.emazon.aplication.handler.interfaces.IArticleHandler;
 import bootcampragma.emazon.aplication.mapper.request.ArticleRequestMapper;
-import bootcampragma.emazon.aplication.mapper.response.BrandResponseMapper;
-import bootcampragma.emazon.aplication.mapper.response.CategoryResponseMapper;
-import bootcampragma.emazon.aplication.util.ArticleMethods;
+import bootcampragma.emazon.aplication.mapper.response.ArticleResponseMapper;
 import bootcampragma.emazon.domain.api.IArticleServicePort;
-import bootcampragma.emazon.domain.api.IBrandServicePort;
-import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Article;
+import bootcampragma.emazon.domain.entity.Brand;
+import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.util.CustomArticlePage;
-import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
-import bootcampragma.emazon.aplication.util.ArticlesValidation;
+import bootcampragma.emazon.domain.util.ArticlesValidation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,44 +23,40 @@ import java.util.List;
 public class ArticleHandler implements IArticleHandler {
 
     private final IArticleServicePort articleServicePort;
-    private final IBrandServicePort brandServicePort;
-    private final ICategoryServicePort categoryServicePort;
-    private final ICategoryRepository categoryRepository;
-    private final BrandResponseMapper brandResponseMapper;
-    private final CategoryResponseMapper categoryResponseMapper;
     private final ArticleRequestMapper articleRequestMapper;
+    private final ArticleResponseMapper articleResponseMapper;
 
     @Override
     public void saveArticle(ArticleRequest articleRequest) {
+        Article article = articleRequestMapper.toRequest(articleRequest);
+
         if (articleRequest == null) {
             throw new IllegalArgumentException("Article request cannot be null");
         }
-        articleServicePort.saveArticle(articleRequestMapper.toRequest(articleRequest));
+        Brand brand = new Brand();
+        brand.setId(articleRequest.getBrandId());
+
+        List<Long> categoryIds = articleRequest.getCategoriesId();
+        List<Category> categories = categoryIds.stream()
+                .map(id -> {
+                    Category category = new Category();
+                    category.setId(id);
+                    return category;
+                }).toList();
+
+        article.setCategories(categories);
+        article.setBrand(brand);
+
+        articleServicePort.saveArticle(article);
     }
 
     @Override
-    public CustomArticlePage<ArticleResponse> getAllArticle(Integer page, Integer size, String sortDirection, String sortBy) {
+    public CustomArticlePage<ArticleResponse> getAllArticles(Integer page, Integer size, String sortDirection, String sortBy) {
 
         ArticlesValidation.validationGetAllArticles(page, size, sortDirection, sortBy);
 
-        CustomArticlePage<Article> articlePage = articleServicePort.getAllArticle(page, size, sortDirection, sortBy);
+        CustomArticlePage<Article> articlePage = articleServicePort.getAllArticles(page, size, sortDirection, sortBy);
 
-        List<ArticleResponse> articleResponses = ArticleMethods.mapArticleResponse(
-                articlePage.getContent(),
-                brandServicePort,
-                categoryServicePort,
-                categoryRepository,
-                brandResponseMapper,
-                categoryResponseMapper
-        );
-
-        return new CustomArticlePage<>(
-                articleResponses,
-                articlePage.getPageNumber(),
-                articlePage.getPageSize(),
-                articlePage.getTotalElements(),
-                articlePage.getTotalPages(),
-                articlePage.getSortBy()
-        );
+        return articleResponseMapper.toResponseList(articlePage);
     }
 }

@@ -4,30 +4,17 @@ import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.CategoryEntity;
 import bootcampragma.emazon.domain.util.CustomPage;
 import org.mapstruct.Mapper;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface CategoryEntityMapper {
 
-    @Named("toCategoryEntity")
     CategoryEntity toCategoryEntity(Category category);
-
-
-    @Named("toCategoryEntityListToIdList")
-    default List<Long> toCategoryEntityListToIdList(List<CategoryEntity> categoryEntities) {
-        return categoryEntities.stream()
-                .map(CategoryEntity::getId)
-                .collect(Collectors.toList());
-    }
-
-
-    Category toDomainCategory(CategoryEntity categoryEntity);
+    Category toCategory(CategoryEntity categoryEntity);
 
     List<Category> toCategoryList(List<CategoryEntity> categoryEntities);
 
@@ -42,10 +29,4 @@ public interface CategoryEntityMapper {
         );
     }
 
-    @Named("toCategoryEntity")
-    default CategoryEntity toCategoryEntity(Long categoryId) {
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(categoryId);
-        return categoryEntity;
-    }
 }

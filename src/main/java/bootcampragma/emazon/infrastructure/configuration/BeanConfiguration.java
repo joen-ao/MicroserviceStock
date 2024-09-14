@@ -57,12 +57,12 @@ public class BeanConfiguration {
 
     @Bean
     public IArticlePersistencePort articlePersistencePort() {
-        return new ArticleJpaAdapter(articleRepository, articleEntityMapper);
+        return new ArticleJpaAdapter(articleRepository, articleEntityMapper, brandRepository, categoryRepository);
     }
 
     @Bean
     public IArticleServicePort articleServicePort(){
-        return new ArticleUseCase(articlePersistencePort());
+        return new ArticleUseCase(articlePersistencePort(), categoryPersistencePort(), brandPersistencePort());
     }
 
 

@@ -35,6 +35,15 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
         return categoryEntityMapper.toCustomPage(categoryEntityPage);
     }
+    @Override
+    public boolean existsById(Long id) {
+        return categoryRepository.findById(id).isPresent();
+    }
+
+    @Override
+    public boolean findByName(String name) {
+        return categoryRepository.findByName(name).isPresent();
+    }
 }
 
 

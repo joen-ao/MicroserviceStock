@@ -1,4 +1,4 @@
-package bootcampragma.emazon.aplication.util;
+package bootcampragma.emazon.domain.util;
 
 import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 
@@ -32,6 +32,7 @@ public class ArticlesValidation {
         if (!sortBy.equals(SORT_BY_NAME) && !sortBy.equals(SORT_BY_BRAND) && !sortBy.equals(SORT_BY_CATEGORIES_NAME)) {
             throw new IllegalArgumentException("Invalid sort by value");
         }
+
 
     }
 }

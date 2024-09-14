@@ -34,7 +34,7 @@ public class CategoryHandler implements ICategoryHandler {
 
     @Override
     public CustomPage<CategoryResponse> getAllCategory(Integer page, Integer size, String sortDirection) {
-        if (page < 0) {
+        if (page < 0) {//MOVER VALIDACIONES
             throw new IllegalArgumentException("Page number cannot be negative");
         }
         if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
@@ -42,9 +42,6 @@ public class CategoryHandler implements ICategoryHandler {
         }
         if(size == null || size < 0){
             throw new IllegalArgumentException("Size number cannot be negative and null");
-        }
-        if( sortDirection.isEmpty()){
-            throw new IllegalArgumentException("sort direction cannot be negative and null");
         }
 
         CustomPage<Category> categoryPage = categoryServicePort.getAllCategory(page, size, sortDirection);

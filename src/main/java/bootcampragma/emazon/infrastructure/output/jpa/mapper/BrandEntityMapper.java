@@ -4,7 +4,6 @@ import bootcampragma.emazon.domain.entity.Brand;
 import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.BrandEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -28,13 +27,6 @@ public interface BrandEntityMapper {
                 brandEntityPage.getTotalElements(),
                 brandEntityPage.getTotalPages()
         );
-    }
-
-    @Named("toBrandEntity")
-    default BrandEntity toBrandEntity(Long brandId) {
-        BrandEntity brandEntity = new BrandEntity();
-        brandEntity.setId(brandId);
-        return brandEntity;
     }
 
 }

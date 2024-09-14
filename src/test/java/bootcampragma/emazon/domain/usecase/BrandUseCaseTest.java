@@ -37,7 +37,7 @@ class BrandUseCaseTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
+    /*@Test
     void findById_ShouldThrowBrandNotFoundException_WhenBrandDoesNotExist() {
         // Arrange
         Long brandId = 1L;

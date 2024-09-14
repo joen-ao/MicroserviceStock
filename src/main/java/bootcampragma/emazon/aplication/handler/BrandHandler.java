@@ -34,7 +34,7 @@ public class BrandHandler implements IBrandHandler {
 
     @Override
     public CustomPage<BrandResponse> getAllBrand(Integer page, Integer size, String sortDirection) {
-        if (page < 0 ) {
+        if (page < 0 ) { //MOVER VALIDACIONES
             throw new IllegalArgumentException("Page number cannot be negative and null");
         }
         if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
@@ -43,10 +43,6 @@ public class BrandHandler implements IBrandHandler {
         if(size == null || size < 0){
             throw new IllegalArgumentException("Size number cannot be negative and null");
         }
-        if(sortDirection == null || sortDirection.isEmpty()){
-            throw new IllegalArgumentException("sort direction cannot be negative and null");
-        }
-
 
         CustomPage<Brand> brandPage = brandServicePort.getAllBrand(page, size, sortDirection);
         List<BrandResponse> brandResponses = brandResponseMapper.toResponseList(brandPage.getContent());

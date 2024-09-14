@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -35,14 +34,15 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
         Page<BrandEntity> brandEntityPage = brandRepository.findAll(pageable);
         return brandEntityMapper.toCustomPage(brandEntityPage);
     }
-
     @Override
-    public Optional<Brand> findByName(String name) {
-        return brandRepository.findByName(name).map(brandEntityMapper::toDomainBrand);
+    public boolean findByName(String name) {
+        return brandRepository.findByName(name).isPresent();
     }
 
     @Override
-    public Optional<Brand> findById(Long id) {
-        return brandRepository.findById(id).map(brandEntityMapper::toDomainBrand);
+    public boolean exitsById(Long id) {
+        return brandRepository.findById(id).isPresent();
     }
+
+
 }

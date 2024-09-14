@@ -2,7 +2,6 @@ package bootcampragma.emazon.aplication.mapper.response;
 
 import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
 import bootcampragma.emazon.domain.entity.Category;
-import bootcampragma.emazon.infrastructure.output.jpa.entity.CategoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,18 +13,8 @@ public interface CategoryResponseMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
 
-    CategoryResponse toResponse(Category category);
+    CategoryResponse toResponse(Category categoryEntity);
 
-    default Category toDomain(CategoryEntity categoryEntity) {
-        if (categoryEntity == null) {
-            return null;
-        }
-        Category category = new Category();
-        category.setId(categoryEntity.getId());
-        category.setName(categoryEntity.getName());
-        category.setDescription(categoryEntity.getDescription());
-        return category;
-    }
 
     default List<CategoryResponse> toResponseList(List<Category> categoryRequestList){
         return categoryRequestList.stream().map(
@@ -37,5 +26,7 @@ public interface CategoryResponseMapper {
                     return categoryResponse;
                 }).toList();
     }
+
+
 
 }

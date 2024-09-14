@@ -6,6 +6,6 @@ import bootcampragma.emazon.domain.util.CustomArticlePage;
 
 public interface IArticleHandler {
     void saveArticle(ArticleRequest articleRequest);
-    CustomArticlePage<ArticleResponse> getAllArticle(Integer page, Integer size, String sortDirection, String sortBy);
+    CustomArticlePage<ArticleResponse> getAllArticles(Integer page, Integer size, String sortDirection, String sortBy);
 }
 
