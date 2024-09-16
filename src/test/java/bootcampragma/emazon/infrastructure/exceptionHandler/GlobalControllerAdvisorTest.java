@@ -58,20 +58,20 @@ class GlobalControllerAdvisorTest {
         assertEquals(expectedResponse, response.getBody());
     }
 
-    @Test
-    void handleCategoryAlreadyExistsException_ShouldReturnBadRequest() {
-        // Arrange
-        CategoryAlreadyExistException ex = new CategoryAlreadyExistException();
-        Map<String, String> expectedResponse = new HashMap<>();
-        expectedResponse.put("error", "Category already exists");
+   @Test
+void handleCategoryAlreadyExistsException_ShouldReturnBadRequest() {
+    // Arrange
+    CategoryAlreadyExistException ex = new CategoryAlreadyExistException();
+    Map<String, String> expectedResponse = new HashMap<>();
+    expectedResponse.put("error", ex.getMessage());
 
-        // Act
-        ResponseEntity<Map<String, String>> response = globalControllerAdvisor.handleCategoryAlreadyExistsException(ex);
+    // Act
+    ResponseEntity<Map<String, String>> response = globalControllerAdvisor.handleCategoryAlreadyExistsException(ex);
 
-        // Assert
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(expectedResponse, response.getBody());
-    }
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(expectedResponse, response.getBody());
+}
 
     @Test
     void handleInvalidSortDirectionException_ShouldReturnBadRequestAndErrorMessage() {

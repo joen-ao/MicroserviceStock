@@ -1,7 +1,7 @@
 package bootcampragma.emazon.infrastructure.output.jpa.mapper;
 
 import bootcampragma.emazon.domain.entity.Article;
-import bootcampragma.emazon.domain.util.CustomArticlePage;
+import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.ArticleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,8 +22,8 @@ public interface ArticleEntityMapper {
 
     List<Article> toArticlesList(List<ArticleEntity> articleEntities);
 
-    default CustomArticlePage<Article> toCustomPageArticle(Page<ArticleEntity> page) {
-        CustomArticlePage<Article> pageCustom = new CustomArticlePage<>();
+    default CustomPage<Article> toCustomPageArticle(Page<ArticleEntity> page) {
+        CustomPage<Article> pageCustom = new CustomPage<>();
 
         List<Article> content = page.getContent().stream()
                 .map(this::toArticle)

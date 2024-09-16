@@ -2,6 +2,7 @@ package bootcampragma.emazon.aplication.mapper.response;
 
 import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
 import bootcampragma.emazon.domain.entity.Category;
+import bootcampragma.emazon.domain.util.CustomPage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,18 +16,20 @@ public interface CategoryResponseMapper {
 
     CategoryResponse toResponse(Category categoryEntity);
 
+    default CustomPage<CategoryResponse> toResponseList(CustomPage<Category> categoryRequestPage){
+        CustomPage<CategoryResponse> pageCustom = new CustomPage<>();
 
-    default List<CategoryResponse> toResponseList(List<Category> categoryRequestList){
-        return categoryRequestList.stream().map(
-                categoryRequest-> {
-                    CategoryResponse categoryResponse = new CategoryResponse();
-                    categoryResponse.setId(categoryRequest.getId());
-                    categoryResponse.setName(categoryRequest.getName());
-                    categoryResponse.setDescription(categoryRequest.getDescription());
-                    return categoryResponse;
-                }).toList();
+        List<CategoryResponse> content = categoryRequestPage.getContent().stream()
+                .map(this::toResponse)
+                .toList();
+
+        pageCustom.setContent(content);
+        pageCustom.setTotalPages(categoryRequestPage.getTotalPages());
+        pageCustom.setTotalElements(categoryRequestPage.getTotalElements());
+        pageCustom.setPageNumber(categoryRequestPage.getPageNumber());
+        pageCustom.setPageSize(categoryRequestPage.getPageSize());
+        return pageCustom;
     }
-
 
 
 }

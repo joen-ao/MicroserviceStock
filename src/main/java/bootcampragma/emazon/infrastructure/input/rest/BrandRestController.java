@@ -56,6 +56,6 @@ public class BrandRestController {
         if (brandResponses.getContent().isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(brandHandler.getAllBrand(page, size, sortDirection));
+        return ResponseEntity.ok(brandResponses);
     }
 }

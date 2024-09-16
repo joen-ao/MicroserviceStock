@@ -2,7 +2,7 @@ package bootcampragma.emazon.aplication.mapper.response;
 
 import bootcampragma.emazon.aplication.dto.response.ArticleResponse;
 import bootcampragma.emazon.domain.entity.Article;
-import bootcampragma.emazon.domain.util.CustomArticlePage;
+import bootcampragma.emazon.domain.util.CustomPage;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -13,8 +13,8 @@ public interface ArticleResponseMapper {
 
     ArticleResponse toResponse(Article article);
 
-    default CustomArticlePage<ArticleResponse> toResponseList(CustomArticlePage<Article> articleRequestPage) {
-        CustomArticlePage<ArticleResponse> pageCustom = new CustomArticlePage<>();
+    default CustomPage<ArticleResponse> toResponseList(CustomPage<Article> articleRequestPage) {
+        CustomPage<ArticleResponse> pageCustom = new CustomPage<>();
 
         List<ArticleResponse> content = articleRequestPage.getContent().stream()
                 .map(this::toResponse)

@@ -1,7 +1,10 @@
 package bootcampragma.emazon.domain.exception.article;
 
+
+import bootcampragma.emazon.domain.util.Constants;
+
 public class CategoriesSizeException extends RuntimeException {
     public CategoriesSizeException() {
-        super("Categories size must be between 1 and 3");
+        super(Constants.CATEGORY_SIZE_EXCEPTION);
     }
 }

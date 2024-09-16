@@ -3,8 +3,8 @@ package bootcampragma.emazon.domain.usecase;
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
-import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
+import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.output.jpa.repository.ICategoryRepository;
 
 

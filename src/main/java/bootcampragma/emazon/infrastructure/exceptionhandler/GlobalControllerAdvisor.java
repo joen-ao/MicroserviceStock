@@ -1,5 +1,6 @@
 package bootcampragma.emazon.infrastructure.exceptionhandler;
 
+import bootcampragma.emazon.domain.exception.article.CategoriesNullException;
 import bootcampragma.emazon.domain.exception.article.CategoriesSizeException;
 import bootcampragma.emazon.domain.exception.article.DuplicateCategoriesException;
 import bootcampragma.emazon.domain.exception.brand.BrandAlreadyExistException;
@@ -84,6 +85,13 @@ public class GlobalControllerAdvisor {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(ERROR_KEY, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoriesNullException.class)
+    public ResponseEntity<Map<String, String>> handleCategoriesNullException(CategoriesNullException ex) {
         Map<String, String> response = new HashMap<>();
         response.put(ERROR_KEY, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

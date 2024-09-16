@@ -1,5 +1,6 @@
 package bootcampragma.emazon.aplication.dto.request;
 
+import bootcampragma.emazon.aplication.util.AplicationConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -13,26 +14,26 @@ import java.util.List;
 public class ArticleRequest {
     private Long id;
 
-    @NotNull(message = "Name is required")
-    @NotBlank(message = "Name cannot be blank")
+    @NotNull(message = AplicationConstants.NAME_IS_REQUIRED)
+    @NotBlank(message = AplicationConstants.NAME_CANNOT_BE_BLANK)
     private String name;
 
-    @NotNull(message = "Description is required")
-    @NotBlank(message = "Description cannot be blank")
+    @NotNull(message = AplicationConstants.DESCRIPTION_IS_REQUIRED)
+    @NotBlank(message = AplicationConstants.DESCRIPTION_CANNOT_BE_BLANK)
     private String description;
 
-    @NotNull(message = "Price is required")
-    @Positive(message = "Price must be positive")
+    @NotNull(message = AplicationConstants.PRICE_IS_REQUIRED)
+    @Positive(message = AplicationConstants.PRICE_MUST_BE_POSITIVE)
     private Double price;
 
-    @NotNull(message = "Stock is required")
-    @Positive(message = "Stock must be positive")
+    @NotNull(message = AplicationConstants.STOCK_IS_REQUIRED)
+    @Positive(message = AplicationConstants.STOCK_MUST_BE_POSITIVE)
     private Integer stock;
 
-    @NotNull(message = "Brand is required")
+    @NotNull(message = AplicationConstants.BRAND_IS_REQUIRED)
     private Long brandId;
 
-    @NotNull(message = "Categories are required")
+    @NotNull(message = AplicationConstants.CATEGORIES_ARE_REQUIRED)
     private List<Long> categoriesId;
 
 }

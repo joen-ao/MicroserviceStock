@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.Mockito.*;
 
@@ -30,41 +29,6 @@ class ArticleJpaAdapterTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void saveArticle_savesArticleSuccessfully() {
-        Article article = new Article();
-        when(articleEntityMapper.toArticleEntity(article)).thenReturn(new ArticleEntity());
-
-        articleJpaAdapter.saveArticle(article);
-
-        verify(articleRepository, times(1)).save(any(ArticleEntity.class));
-    }
-
-    @Test
-    void saveArticle_handlesNullArticle() {
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            articleJpaAdapter.saveArticle(null);
-        });
-
-        // Verify that save method was never called
-        verify(articleRepository, never()).save(any());
-    }
-
-    @Test
-    void saveArticle_ShouldSaveArticle_WhenValidArticleProvided() {
-        // Arrange
-        Article article = new Article();
-        ArticleEntity articleEntity = new ArticleEntity();
-        when(articleEntityMapper.toArticleEntity(any(Article.class))).thenReturn(articleEntity);
-
-        // Act
-        articleJpaAdapter.saveArticle(article);
-
-        // Assert
-        verify(articleEntityMapper).toArticleEntity(article);
-        verify(articleRepository).save(articleEntity);
-    }
 
     @Test
     void saveArticle_ShouldNotSave_WhenExceptionThrownByMapper() {

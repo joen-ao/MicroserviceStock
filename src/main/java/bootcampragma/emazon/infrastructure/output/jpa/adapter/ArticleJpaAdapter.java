@@ -4,7 +4,7 @@ import bootcampragma.emazon.domain.entity.Article;
 import bootcampragma.emazon.domain.exception.brand.BrandNotFoundException;
 import bootcampragma.emazon.domain.exception.category.CategoryNotFoundException;
 import bootcampragma.emazon.domain.spi.IArticlePersistencePort;
-import bootcampragma.emazon.domain.util.CustomArticlePage;
+import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.ArticleEntity;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.BrandEntity;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.CategoryEntity;
@@ -60,7 +60,7 @@ public class ArticleJpaAdapter implements IArticlePersistencePort {
     }
 
     @Override
-    public CustomArticlePage<Article> getAllArticles(Integer page, Integer size, String sortDirection, String sortBy) {
+    public CustomPage<Article> getAllArticles(Integer page, Integer size, String sortDirection, String sortBy) {
         if(sortBy.equals("categories")) {
             sortBy = "categoriesEntity.name";
         }

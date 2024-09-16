@@ -4,7 +4,7 @@ import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionExcept
 
 
 public class ArticlesValidation {
-    public static final String SORT_BY_NAME = "name";
+    public static final String SORT_BY_NAME = "article";
     public static final String SORT_BY_BRAND = "brand";
     public static final String SORT_BY_CATEGORIES_NAME =  "categories";
     public static final String ASCENDANT_SORT = "asc";
@@ -32,7 +32,6 @@ public class ArticlesValidation {
         if (!sortBy.equals(SORT_BY_NAME) && !sortBy.equals(SORT_BY_BRAND) && !sortBy.equals(SORT_BY_CATEGORIES_NAME)) {
             throw new IllegalArgumentException("Invalid sort by value");
         }
-
 
     }
 }
