@@ -1,9 +1,12 @@
 package bootcampragma.emazon.infrastructure.exceptionhandler;
 
+import bootcampragma.emazon.domain.exception.article.CategoriesNullException;
 import bootcampragma.emazon.domain.exception.article.CategoriesSizeException;
 import bootcampragma.emazon.domain.exception.article.DuplicateCategoriesException;
 import bootcampragma.emazon.domain.exception.brand.BrandAlreadyExistException;
+import bootcampragma.emazon.domain.exception.brand.BrandNotFoundException;
 import bootcampragma.emazon.domain.exception.category.CategoryAlreadyExistException;
+import bootcampragma.emazon.domain.exception.category.CategoryNotFoundException;
 import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +44,18 @@ public class GlobalControllerAdvisor {
         response.put(ERROR_KEY, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(BrandNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleBrandNotFoundException(BrandNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(ERROR_KEY, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(CategoryNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(ERROR_KEY, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(CategoryAlreadyExistException.class)
     public ResponseEntity<Map<String, String>> handleCategoryAlreadyExistsException(CategoryAlreadyExistException ex) {
@@ -70,6 +85,13 @@ public class GlobalControllerAdvisor {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put(ERROR_KEY, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoriesNullException.class)
+    public ResponseEntity<Map<String, String>> handleCategoriesNullException(CategoriesNullException ex) {
         Map<String, String> response = new HashMap<>();
         response.put(ERROR_KEY, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

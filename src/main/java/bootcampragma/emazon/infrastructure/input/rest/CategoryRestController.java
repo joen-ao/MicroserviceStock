@@ -51,7 +51,7 @@ public class CategoryRestController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
-
-        return ResponseEntity.ok(categoryHandler.getAllCategory(page, size, sortDirection));
+        CustomPage<CategoryResponse> categoryResponses = categoryHandler.getAllCategory(page, size, sortDirection);
+        return ResponseEntity.ok(categoryResponses);
     }
 }

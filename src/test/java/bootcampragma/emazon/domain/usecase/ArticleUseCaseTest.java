@@ -1,121 +1,151 @@
 package bootcampragma.emazon.domain.usecase;
-
 import bootcampragma.emazon.domain.entity.Article;
+import bootcampragma.emazon.domain.entity.Brand;
+import bootcampragma.emazon.domain.entity.Category;
+import bootcampragma.emazon.domain.exception.article.CategoriesNullException;
 import bootcampragma.emazon.domain.exception.article.CategoriesSizeException;
 import bootcampragma.emazon.domain.exception.article.DuplicateCategoriesException;
+import bootcampragma.emazon.domain.exception.brand.BrandNotFoundException;
 import bootcampragma.emazon.domain.spi.IArticlePersistencePort;
-import bootcampragma.emazon.domain.util.CustomArticlePage;
+import bootcampragma.emazon.domain.spi.IBrandPersistencePort;
+import bootcampragma.emazon.domain.spi.ICategoryPersistencePort;
+import bootcampragma.emazon.domain.util.CustomPage;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import java.util.List;
 
 class ArticleUseCaseTest {
-    private final IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
-    private final ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort);
+
+@Test
+void saveArticle_withValidArticle_savesSuccessfully() {
+    IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
+    ICategoryPersistencePort categoryPersistencePort = mock(ICategoryPersistencePort.class);
+    IBrandPersistencePort brandPersistencePort = mock(IBrandPersistencePort.class);
+    ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort, categoryPersistencePort, brandPersistencePort);
+
+    Category category1 = new Category();
+    category1.setId(1L);
+    Category category2 = new Category();
+    category2.setId(2L);
+
+    Brand brand = new Brand();
+    brand.setId(1L);
+
+    Article article = new Article();
+    article.setCategories(List.of(category1, category2));
+    article.setBrand(brand);
+
+    when(brandPersistencePort.exitsById(1L)).thenReturn(true);
+    when(categoryPersistencePort.existsById(1L)).thenReturn(true);
+    when(categoryPersistencePort.existsById(2L)).thenReturn(true);
+
+    articleUseCase.saveArticle(article);
+
+    verify(articlePersistencePort).saveArticle(article);
+}
+
+@Test
+void saveArticle_withDuplicateCategories_throwsDuplicateCategoriesException() {
+    IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
+    ICategoryPersistencePort categoryPersistencePort = mock(ICategoryPersistencePort.class);
+    IBrandPersistencePort brandPersistencePort = mock(IBrandPersistencePort.class);
+    ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort, categoryPersistencePort, brandPersistencePort);
+
+    Category category1 = new Category();
+    category1.setId(1L);
+    Category category2 = new Category();
+    category2.setId(1L); // Duplicate category ID
+
+    Article article = new Article();
+    article.setCategories(List.of(category1, category2));
+    article.setBrand(new Brand());
+
+    when(brandPersistencePort.exitsById(anyLong())).thenReturn(true);
+    when(categoryPersistencePort.existsById(anyLong())).thenReturn(true);
+
+    assertThrows(DuplicateCategoriesException.class, () -> articleUseCase.saveArticle(article));
+}
+
+@Test
+void saveArticle_withMoreThanThreeCategories_throwsCategoriesSizeException() {
+    IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
+    ICategoryPersistencePort categoryPersistencePort = mock(ICategoryPersistencePort.class);
+    IBrandPersistencePort brandPersistencePort = mock(IBrandPersistencePort.class);
+    ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort, categoryPersistencePort, brandPersistencePort);
+
+    Category category1 = new Category();
+    category1.setId(1L);
+    Category category2 = new Category();
+    category2.setId(2L);
+    Category category3 = new Category();
+    category3.setId(3L);
+    Category category4 = new Category();
+    category4.setId(4L);
+
+    Article article = new Article();
+    article.setCategories(List.of(category1, category2, category3, category4));
+    article.setBrand(new Brand());
+
+    assertThrows(CategoriesSizeException.class, () -> articleUseCase.saveArticle(article));
+}
+
+
+  @Test
+void saveArticle_withNonExistentBrand_throwsBrandNotFoundException() {
+    IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
+    ICategoryPersistencePort categoryPersistencePort = mock(ICategoryPersistencePort.class);
+    IBrandPersistencePort brandPersistencePort = mock(IBrandPersistencePort.class);
+    ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort, categoryPersistencePort, brandPersistencePort);
+
+    Category category1 = new Category();
+    category1.setId(1L);
+    Category category2 = new Category();
+    category2.setId(2L);
+
+    Brand brand = new Brand();
+    brand.setId(1L);
+
+    Article article = new Article();
+    article.setCategories(List.of(category1, category2)); // Ensure categories are not null
+    article.setBrand(brand);
+
+    when(brandPersistencePort.exitsById(1L)).thenReturn(false);
+
+    assertThrows(BrandNotFoundException.class, () -> articleUseCase.saveArticle(article));
+}
+
+
 
     @Test
-    void saveArticle_WhenCategoriesAreUniqueAndWithinLimit_ShouldSaveArticle() {
+void getAllArticles_withValidParameters_returnsArticles() {
+    IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
+    ICategoryPersistencePort categoryPersistencePort = mock(ICategoryPersistencePort.class);
+    IBrandPersistencePort brandPersistencePort = mock(IBrandPersistencePort.class);
+    ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort, categoryPersistencePort, brandPersistencePort);
+
+    CustomPage<Article> expectedPage = new CustomPage<>();
+    when(articlePersistencePort.getAllArticles(0, 10, "ASC", "article")).thenReturn(expectedPage);
+
+    CustomPage<Article> result = articleUseCase.getAllArticles(0, 10, "ASC", "article");
+
+    assertEquals(expectedPage, result);
+}
+    @Test
+    void saveArticle_withNullCategories_throwsCategoriesNullException() {
+        IArticlePersistencePort articlePersistencePort = mock(IArticlePersistencePort.class);
+        ICategoryPersistencePort categoryPersistencePort = mock(ICategoryPersistencePort.class);
+        IBrandPersistencePort brandPersistencePort = mock(IBrandPersistencePort.class);
+        ArticleUseCase articleUseCase = new ArticleUseCase(articlePersistencePort, categoryPersistencePort, brandPersistencePort);
+
         Article article = new Article();
-        article.setCategoriesId(List.of(1L, 2L, 3L));
+        article.setCategories(null); // Set categories to null
+        article.setBrand(new Brand());
 
-        articleUseCase.saveArticle(article);
+        when(brandPersistencePort.exitsById(anyLong())).thenReturn(true);
+        when(categoryPersistencePort.existsById(anyLong())).thenReturn(true);
 
-        verify(articlePersistencePort, times(1)).saveArticle(article);
-    }
-
-    @Test
-    void saveArticle_WhenCategoriesAreNotUnique_ShouldThrowDuplicateCategoriesException() {
-        Article article = new Article();
-        article.setCategoriesId(List.of(1L, 2L, 2L));
-
-        assertThrows(DuplicateCategoriesException.class, () -> articleUseCase.saveArticle(article));
-
-        verify(articlePersistencePort, never()).saveArticle(article);
-    }
-
-    @Test
-    void saveArticle_WhenCategoriesAreEmpty_ShouldThrowCategoriesSizeException() {
-        Article article = new Article();
-        article.setCategoriesId(new ArrayList<>());
-
-        assertThrows(CategoriesSizeException.class, () -> articleUseCase.saveArticle(article));
-
-        verify(articlePersistencePort, never()).saveArticle(article);
-    }
-
-    @Test
-    void saveArticle_WhenCategoriesExceedLimit_ShouldThrowCategoriesSizeException() {
-        Article article = new Article();
-        article.setCategoriesId(List.of(1L, 2L, 3L, 4L));
-
-        assertThrows(CategoriesSizeException.class, () -> articleUseCase.saveArticle(article));
-
-        verify(articlePersistencePort, never()).saveArticle(article);
-    }
-    @Test
-    void getAllArticle_ShouldReturnValidPage_WhenValidInput() {
-        // Arrange
-        CustomArticlePage<Article> expectedPage = new CustomArticlePage<>(Collections.singletonList(new Article()), 0, 10, 1L, 1, "name");
-        when(articlePersistencePort.getAllArticle(anyInt(), anyInt(), anyString(), anyString()))
-                .thenReturn(expectedPage);
-
-        // Act
-        CustomArticlePage<Article> result = articleUseCase.getAllArticle(0, 10, "asc", "name");
-
-        // Assert
-        assertEquals(expectedPage, result);
-        verify(articlePersistencePort, times(1)).getAllArticle(0, 10, "asc", "name");
-    }
-
-    @Test
-    void getAllArticle_ShouldReturnEmptyPage_WhenNoArticlesFound() {
-        // Arrange
-        CustomArticlePage<Article> emptyPage = new CustomArticlePage<>(Collections.emptyList(), 0, 10, 0L, 0,"name");
-        when(articlePersistencePort.getAllArticle(anyInt(), anyInt(), anyString(), anyString()))
-                .thenReturn(emptyPage);
-
-        // Act
-        CustomArticlePage<Article> result = articleUseCase.getAllArticle(0, 10, "asc", "name");
-
-        // Assert
-        assertEquals(emptyPage, result);
-        verify(articlePersistencePort, times(1)).getAllArticle(0, 10, "asc", "name");
-    }
-
-    @Test
-    void getAllArticle_ShouldHandleInvalidPageParameters() {
-        // Arrange
-        when(articlePersistencePort.getAllArticle(anyInt(), anyInt(), anyString(), anyString()))
-                .thenThrow(new IllegalArgumentException("Invalid page parameters"));
-
-        // Act & Assert
-        try {
-            articleUseCase.getAllArticle(-1, -5, "asc", "name");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Invalid page parameters", e.getMessage());
-        }
-
-        verify(articlePersistencePort, times(1)).getAllArticle(-1, -5, "asc", "name");
-    }
-
-    @Test
-    void getAllArticle_ShouldHandleNullSortDirection() {
-        // Arrange
-        CustomArticlePage<Article> defaultPage = new CustomArticlePage<>(Collections.singletonList(new Article()), 0, 10, 1L, 1,"name");
-        when(articlePersistencePort.getAllArticle(anyInt(), anyInt(), eq(null), anyString()))
-                .thenReturn(defaultPage);
-
-        // Act
-        CustomArticlePage<Article> result = articleUseCase.getAllArticle(0, 10, null, "name");
-
-        // Assert
-        assertEquals(defaultPage, result);
-        verify(articlePersistencePort, times(1)).getAllArticle(0, 10, null, "name");
+        assertThrows(CategoriesNullException.class, () -> articleUseCase.saveArticle(article));
     }
 }

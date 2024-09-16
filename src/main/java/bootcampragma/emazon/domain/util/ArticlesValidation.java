@@ -1,10 +1,10 @@
-package bootcampragma.emazon.aplication.util;
+package bootcampragma.emazon.domain.util;
 
 import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
 
 
 public class ArticlesValidation {
-    public static final String SORT_BY_NAME = "name";
+    public static final String SORT_BY_NAME = "article";
     public static final String SORT_BY_BRAND = "brand";
     public static final String SORT_BY_CATEGORIES_NAME =  "categories";
     public static final String ASCENDANT_SORT = "asc";

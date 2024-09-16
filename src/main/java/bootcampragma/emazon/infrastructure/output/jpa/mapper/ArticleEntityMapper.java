@@ -1,22 +1,40 @@
 package bootcampragma.emazon.infrastructure.output.jpa.mapper;
 
 import bootcampragma.emazon.domain.entity.Article;
+import bootcampragma.emazon.domain.util.CustomPage;
 import bootcampragma.emazon.infrastructure.output.jpa.entity.ArticleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {BrandEntityMapper.class, CategoryEntityMapper.class})
 public interface ArticleEntityMapper {
-    @Mapping(source = "brandId", target = "brand", qualifiedByName = "toBrandEntity")
-    @Mapping(source = "categoriesId", target = "categories", qualifiedByName = "toCategoryEntity")
+
+    @Mapping(source = "brand", target = "brandEntity")
+    @Mapping(source = "categories", target = "categoriesEntity")
     ArticleEntity toArticleEntity(Article article);
 
-    @Mapping(source = "brand.id", target = "brandId")
-    @Mapping(source = "categories", target = "categoriesId", qualifiedByName = "toCategoryEntityListToIdList")
+    @Mapping(source = "brandEntity", target = "brand")
+    @Mapping(source = "categoriesEntity", target = "categories")
     Article toArticle(ArticleEntity articleEntity);
 
-    List<Article> toArticleList(List<ArticleEntity> articleEntities);
-}
+    List<Article> toArticlesList(List<ArticleEntity> articleEntities);
 
+    default CustomPage<Article> toCustomPageArticle(Page<ArticleEntity> page) {
+        CustomPage<Article> pageCustom = new CustomPage<>();
+
+        List<Article> content = page.getContent().stream()
+                .map(this::toArticle)
+                .toList();
+
+
+        pageCustom.setContent(content);
+        pageCustom.setTotalElements(page.getTotalElements());
+        pageCustom.setTotalPages(page.getTotalPages());
+        pageCustom.setPageSize(page.getSize());
+        pageCustom.setPageNumber(page.getNumber());
+        return pageCustom;
+    }
+}

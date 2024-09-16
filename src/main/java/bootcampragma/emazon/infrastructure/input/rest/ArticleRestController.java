@@ -3,8 +3,8 @@ package bootcampragma.emazon.infrastructure.input.rest;
 import bootcampragma.emazon.aplication.dto.request.ArticleRequest;
 import bootcampragma.emazon.aplication.dto.response.ArticleResponse;
 import bootcampragma.emazon.aplication.handler.interfaces.IArticleHandler;
-import bootcampragma.emazon.aplication.util.ArticlesValidation;
-import bootcampragma.emazon.domain.util.CustomArticlePage;
+import bootcampragma.emazon.domain.util.ArticlesValidation;
+import bootcampragma.emazon.domain.util.CustomPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,15 +48,14 @@ public class ArticleRestController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @GetMapping("/all")
-    public ResponseEntity<CustomArticlePage<ArticleResponse>> getAllArticles(
+    public ResponseEntity<CustomPage<ArticleResponse>> getAllArticle(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "ASC") String sortDirection,
             @RequestParam(defaultValue = "name") String sortBy) {
-
         ArticlesValidation.validationGetAllArticles(page, size, sortDirection, sortBy);
 
-        CustomArticlePage<ArticleResponse> articleResponses = articleHandler.getAllArticle(page, size, sortDirection, sortBy);
+        CustomPage<ArticleResponse> articleResponses = articleHandler.getAllArticles(page, size, sortDirection, sortBy);
         return ResponseEntity.ok(articleResponses);
     }
 }

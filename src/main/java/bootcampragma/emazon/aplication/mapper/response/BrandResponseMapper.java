@@ -2,6 +2,7 @@ package bootcampragma.emazon.aplication.mapper.response;
 
 import bootcampragma.emazon.aplication.dto.response.BrandResponse;
 import bootcampragma.emazon.domain.entity.Brand;
+import bootcampragma.emazon.domain.util.CustomPage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,17 +13,20 @@ public interface BrandResponseMapper {
     @Mapping(target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
+    BrandResponse toResponse(Brand brandEntity);
 
-    BrandResponse toResponse(Brand brand);
-    List<Brand> toBrandList(List<BrandResponse> brandResponse);
-    default List<BrandResponse> toResponseList(List<Brand> brandRequestList){
-        return brandRequestList.stream().map(
-                brandRequest->{
-                    BrandResponse brandResponse = new BrandResponse();
-                    brandResponse.setId(brandRequest.getId());
-                    brandResponse.setName(brandRequest.getName());
-                    brandResponse.setDescription(brandRequest.getDescription());
-                    return brandResponse;
-                }).toList();
+    default CustomPage<BrandResponse> toResponseList(CustomPage<Brand> brandRequestPage){
+        CustomPage<BrandResponse> pageCustom = new CustomPage<>();
+
+        List<BrandResponse> content = brandRequestPage.getContent().stream()
+                .map(this::toResponse)
+                .toList();
+
+        pageCustom.setContent(content);
+        pageCustom.setTotalPages(brandRequestPage.getTotalPages());
+        pageCustom.setTotalElements(brandRequestPage.getTotalElements());
+        pageCustom.setPageNumber(brandRequestPage.getPageNumber());
+        pageCustom.setPageSize(brandRequestPage.getPageSize());
+        return pageCustom;
     }
 }

@@ -1,18 +1,20 @@
 package bootcampragma.emazon.aplication.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-@Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class ArticleResponse {
     private Long id;
     private String name;
     private String description;
-    private Double price;
-    private Integer stock;
-    private BrandResponse brand;
-    private List<CategoryResponse> categories;
+    private BigDecimal price;
+    private Long stock;
+    private BrandArticleResponse brand;
+    private List<CategoryArticleResponse> categories;
+
 }

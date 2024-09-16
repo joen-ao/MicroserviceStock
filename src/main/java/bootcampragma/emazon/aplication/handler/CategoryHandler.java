@@ -5,6 +5,7 @@ import bootcampragma.emazon.aplication.dto.response.CategoryResponse;
 import bootcampragma.emazon.aplication.handler.interfaces.ICategoryHandler;
 import bootcampragma.emazon.aplication.mapper.request.CategoryRequestMapper;
 import bootcampragma.emazon.aplication.mapper.response.CategoryResponseMapper;
+import bootcampragma.emazon.aplication.util.AplicationConstants;
 import bootcampragma.emazon.domain.api.ICategoryServicePort;
 import bootcampragma.emazon.domain.entity.Category;
 import bootcampragma.emazon.domain.exception.category.InvalidSortDirectionException;
@@ -13,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,36 +27,26 @@ public class CategoryHandler implements ICategoryHandler {
     @Override
     public void saveCategory(CategoryRequest categoryRequest) {
         if (categoryRequest == null) {
-            throw new IllegalArgumentException("Brand request cannot be null");
+            throw new IllegalArgumentException(AplicationConstants.CATEGORY_CANNOT_BE_NULL);
         }
         categoryServicePort.saveCategory(categoryRequestMapper.toRequest(categoryRequest));
     }
 
     @Override
     public CustomPage<CategoryResponse> getAllCategory(Integer page, Integer size, String sortDirection) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Page number cannot be negative");
+        if (page < 0) {//MOVER VALIDACIONES
+            throw new IllegalArgumentException(AplicationConstants.PAGE_NUMBER_ERROR);
         }
-        if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
-            throw new InvalidSortDirectionException("Invalid sort direction");
+        if (!sortDirection.equalsIgnoreCase(AplicationConstants.ASC) && !sortDirection.equalsIgnoreCase(AplicationConstants.DESC)) {
+            throw new InvalidSortDirectionException(AplicationConstants.INVALID_SORT_DIRECTION);
         }
         if(size == null || size < 0){
-            throw new IllegalArgumentException("Size number cannot be negative and null");
-        }
-        if( sortDirection.isEmpty()){
-            throw new IllegalArgumentException("sort direction cannot be negative and null");
+            throw new IllegalArgumentException(AplicationConstants.SIZE_NUMBER_EXCEPTION);
         }
 
         CustomPage<Category> categoryPage = categoryServicePort.getAllCategory(page, size, sortDirection);
 
-        List<CategoryResponse> categoryResponses = categoryResponseMapper.toResponseList(categoryPage.getContent());
 
-        return new CustomPage<>(
-                categoryResponses,
-                categoryPage.getPageNumber(),
-                categoryPage.getPageSize(),
-                categoryPage.getTotalElements(),
-                categoryPage.getTotalPages()
-        );
+        return categoryResponseMapper.toResponseList(categoryPage);
     }
 }

@@ -84,23 +84,23 @@ class BrandRestControllerTest {
     }
 
 
+@Test
+void getAllBrand_ShouldReturnNotFound_WhenNoBrands() throws Exception {
+    // Arrange
+    CustomPage<BrandResponse> emptyPage = new CustomPage<>();
+    emptyPage.setContent(Collections.emptyList()); // Ensure the page content is empty
+    when(brandHandler.getAllBrand(anyInt(), anyInt(), anyString())).thenReturn(emptyPage);
 
-    @Test
-    void getAllBrand_ShouldReturnNotFound_WhenNoBrands() throws Exception {
-        // Arrange
-        CustomPage<BrandResponse> emptyPage = new CustomPage<>(Collections.emptyList(), 0, 10, 0L, 0);
-        when(brandHandler.getAllBrand(anyInt(), anyInt(), anyString())).thenReturn(emptyPage);
+    // Act
+    ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/brand/all")
+            .param("page", "0")
+            .param("size", "10")
+            .param("sortDirection", "asc")
+            .accept(MediaType.APPLICATION_JSON));
 
-        // Act
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/brand/all")
-                .param("page", "0")
-                .param("size", "10")
-                .param("sortDirection", "asc")
-                .accept(MediaType.APPLICATION_JSON));
-
-        // Assert
-        result.andExpect(status().isNotFound());
-    }
+    // Assert
+    result.andExpect(status().isNotFound());
+}
 
 
 }

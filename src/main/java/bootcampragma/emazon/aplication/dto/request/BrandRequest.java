@@ -1,5 +1,6 @@
 package bootcampragma.emazon.aplication.dto.request;
 
+import bootcampragma.emazon.aplication.util.AplicationConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,13 +13,13 @@ public class BrandRequest {
 
     private Long id;
 
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
-    @NotNull(message = "Name is required")
-    @NotBlank(message = "Name is required")
+    @Size(min = 3, max = 50, message = AplicationConstants.NAME_MAX_MIN)
+    @NotNull(message = AplicationConstants.NAME_IS_REQUIRED)
+    @NotBlank(message = AplicationConstants.NAME_IS_REQUIRED)
     private String name;
 
-    @Size(min = 3, max = 120, message = "Description must be between 3 and 120 characters")
-    @NotNull(message = "Description is required")
-    @NotBlank(message = "Description is required")
+    @Size(min = 3, max = 120, message = AplicationConstants.DESCRIPTION_MAX_MIN)
+    @NotNull(message = AplicationConstants.DESCRIPTION_IS_REQUIRED)
+    @NotBlank(message = AplicationConstants.DESCRIPTION_IS_REQUIRED)
     private String description;
 }
